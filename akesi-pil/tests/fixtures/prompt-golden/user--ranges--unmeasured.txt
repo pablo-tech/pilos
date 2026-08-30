@@ -1,0 +1,5 @@
+Marker: Lp(a)
+Unit: (dimensionless ratio — this marker has no physical unit; return "" for the unit field)
+Recent measured values for this patient: (none on file)
+
+Return the personalized reference range as JSON.

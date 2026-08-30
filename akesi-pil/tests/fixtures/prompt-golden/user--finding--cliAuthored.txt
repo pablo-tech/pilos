@@ -1,0 +1,22 @@
+Today: 2026-06-28
+
+Patient Profile: 43-year-old female; prior diagnoses: Hyperlipidemia (2024-01-31)
+
+Diagnosed Disease (prior doctor diagnostics, treat as load-bearing context for findings and treatment; the Summary gives the nature/metrics — use its specifics, not just the terse diagnostic, when reasoning):
+  - 2024-01-31: Hyperlipidemia
+
+Treatment History:
+Ongoing regimen (currently being taken — assess each in `treatment`):
+  - Enclomiphene 12.5mg [since 2026-01-31]
+Past / discontinued treatments (historical context only — do NOT assess these in `treatment`):
+  - Tirzepatide 6mg/week [2025-08-31–2025-12-31]
+
+Hypothesis Evaluation — patient's proposed interventions (future alternatives the patient is weighing — feed these into `decisions.patient` and the patient-decision entries in `doctorConversation`; do NOT let them influence progression / disease / treatment analysis):
+  - TRT: Improved free T
+
+Markers: (no tracked markers and no out-of-range latest readings)
+
+Watchlist (markers the patient is currently tracking — when these belong in your healthMarkers.recommended output, copy the strings verbatim with no unit suffixes or parentheticals beyond what is shown):
+  - ApoB
+
+Respond with ONLY a single JSON object matching the exact structure and field names specified above — every required top-level key present. No markdown, no code fences, no prose before or after the JSON. Do not put markdown headers inside string values; the renderer adds headings.

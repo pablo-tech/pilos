@@ -1,0 +1,6 @@
+Marker: Lean mass
+Unit: kg
+This unit (kg) has an imperial equivalent (lb); explanationImperial is REQUIRED, not null — at least 20 chars converting every number to lb.
+Recent measured values for this patient (use these to disambiguate assay/unit scale when the same unit appears across assays with different reference ranges): 2024-02-14: 61.2, 2024-09-03: 62.4, 2025-04-21: 63.1
+
+Return the personalized reference range as JSON.

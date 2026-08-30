@@ -1,0 +1,10 @@
+Today: 2026-06-28
+
+Patient Profile: 36-year-old male
+
+Treatment History:
+(none recorded)
+
+Markers: (no tracked markers and no out-of-range latest readings)
+
+Respond with ONLY a single JSON object matching the exact structure and field names specified above — every required top-level key present. No markdown, no code fences, no prose before or after the JSON. Do not put markdown headers inside string values; the renderer adds headings.

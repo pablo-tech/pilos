@@ -1,0 +1,5 @@
+Marker: Android/Gynoid % fat ratio
+Unit: (dimensionless ratio — this marker has no physical unit; return "" for the unit field)
+Recent measured values for this patient (use these to disambiguate assay/unit scale when the same unit appears across assays with different reference ranges): 2024-09-03: 0.98, 2025-04-21: 0.94, 2025-11-08: 0.91, 2026-01-16: 0.89, 2026-05-19: 0.86
+
+Return the personalized reference range as JSON.
