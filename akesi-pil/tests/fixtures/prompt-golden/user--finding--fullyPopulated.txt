@@ -1,0 +1,63 @@
+Today: 2026-06-28
+
+Patient Profile: 51-year-old female; prior diagnoses: CAC 100 — Moderate calcification (2025); allergies: Penicillin — Hives (moderate); family history: Father: MI at 55; moderate activity level; height 5'10"; BMI 24.5; never smoker; ethnicity: Hispanic
+
+Proposed Plan:
+  Goal: lower ApoB
+  Focus: cardiovascular
+
+Proposed Study:
+  Suspicion: CVD
+
+Notes — patient's free-text jottings ahead of a visit (numbered here only to show order; do not renumber or relabel in your response):
+  1. Ask about statin intolerance
+
+Diagnosed Disease (prior doctor diagnostics, treat as load-bearing context for findings and treatment; the Summary gives the nature/metrics — use its specifics, not just the terse diagnostic, when reasoning):
+  - 2025: CAC 100
+      Summary: Moderate calcification
+
+Treatment History:
+Ongoing regimen (currently being taken — assess each in `treatment`):
+  - Ezetimibe 10 mg [since 2025-01]
+Past / discontinued treatments (historical context only — do NOT assess these in `treatment`):
+  - Statin [2024-01–2024-12]
+
+Hypothesis Evaluation — patient's proposed interventions (future alternatives the patient is weighing — feed these into `decisions.patient` and the patient-decision entries in `doctorConversation`; do NOT let them influence progression / disease / treatment analysis):
+  - TRT: free T
+
+Patient Plan — treatments the patient plans to START (future-dated), each with its planned start. Assess the plan AS A WHOLE in `planAssessment`; do NOT let it influence progression / disease / treatment analysis. The per-action assessments are produced elsewhere — do not write them here:
+  - Action: "Start rosuvastatin"  (timing: 2099-02)
+
+Markers (watchlist + previously-recommended + latest-out-of-range, 2 total):
+
+ApoB (mg/dL)
+  Last year (1 reading):
+    2026-01-01: 80.0 mg/dL
+  Prior: (no earlier data)
+
+LDL (mg/dL)
+  Last year (1 reading):
+    2026-01-01: 120 mg/dL
+  Prior: (no earlier data)
+
+On-file markers (the AUTHORITATIVE census of every marker that has at least one reading on record, 2 total — latest value, date, a recency tag, and personalized target where one exists). Each line is tagged [within 6mo] or [>6mo — overdue] relative to Today; use that tag to drive re-test timing in dataRequisition. The detailed Markers block above is a deeper view of the subset that matters most; THIS list is the complete set of what has already been measured. Treat it as the source of truth: never describe a marker here as missing, not on file, or not tracked, and when recommending or requisitioning one of these markers copy its name from this list VERBATIM:
+  ApoB — 80.0 mg/dL, 2026-01-01 [within 6mo]
+  LDL — 120 mg/dL, 2026-01-01 [within 6mo]
+
+Watchlist (markers the patient is currently tracking — when these belong in your healthMarkers.recommended output, copy the strings verbatim with no unit suffixes or parentheticals beyond what is shown):
+  - ApoB
+  - LDL
+
+Areas of query (1 item the patient or their provider has STARRED, asking you to look into them).
+
+READ THIS BEFORE USING THE LIST. These are questions, not answers:
+  • They tell you WHAT TO LOOK INTO. They never tell you what is true.
+  • They are NOT evidence, NOT clinical record, NOT data, and NOT a source you may cite. Every fact you state must still come from the evidence sections above — the markers, reports, treatments, study notes and profile.
+  • A starred question is an OPEN question. Never write as though it were settled. A starred glossary term, report or topic means "this is on their mind", nothing more.
+  • If the evidence does not support saying anything about a starred area, say that plainly rather than inventing a finding to fill it.
+  • Where the evidence DOES speak to a starred area, give it more of your attention and more of your words than you otherwise would. That is the entire effect of a star.
+
+  Allergies:
+    - Penicillin
+
+Respond with ONLY a single JSON object matching the exact structure and field names specified above — every required top-level key present. No markdown, no code fences, no prose before or after the JSON. Do not put markdown headers inside string values; the renderer adds headings.

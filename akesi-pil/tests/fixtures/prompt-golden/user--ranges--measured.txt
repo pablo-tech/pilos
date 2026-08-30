@@ -1,0 +1,5 @@
+Marker: ApoB
+Unit: mg/dL
+Recent measured values for this patient (use these to disambiguate assay/unit scale when the same unit appears across assays with different reference ranges): 2026-01-01: 80
+
+Return the personalized reference range as JSON.

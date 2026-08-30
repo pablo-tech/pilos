@@ -1,0 +1,25 @@
+{
+  "name": "@pablotech/neuro-pil",
+  "version": "0.1.20",
+  "description": "Dependency-graph, staleness and canonical-hashing engine: record what a value was derived from, and know later whether that evidence has moved. Domain-free.",
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./hash-node": "./hash-node.ts",
+    "./hash-web": "./hash-web.ts",
+    "./markdown": "./markdown.ts",
+    "./compare": "./compare.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "cli": "tsx cli.ts",
+    "bench": "tsx benchmarks/staleness-corpus.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.22.3",
+    "vitest": "^4.1.8"
+  }
+}

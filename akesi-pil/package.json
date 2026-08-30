@@ -1,0 +1,62 @@
+{
+  "name": "@pablotech/akesi-pil",
+  "version": "0.1.20",
+  "description": "Schema-constrained clinical reasoning over lab and marker data, where every constraint stated to the model in prose is re-enforced in code on the response.",
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./types": "./types.ts",
+    "./treatment-normalize": "./treatment-normalize.ts",
+    "./treatment-bucket": "./treatment-bucket.ts",
+    "./treatment-product": "./treatment-product.ts",
+    "./treatment-timing-rules": "./treatment-timing-rules.ts",
+    "./marker-deltas": "./marker-deltas.ts",
+    "./unit-systems": "./unit-systems.ts",
+    "./dates": "./dates.ts",
+    "./ranges": "./ranges.ts",
+    "./ranges-prompt": "./ranges-prompt.ts",
+    "./item-registry": "./item-registry.ts",
+    "./report-title": "./report-title.ts",
+    "./imaging-catalog": "./imaging-catalog.ts",
+    "./system-groups": "./system-groups.ts",
+    "./factors-edit": "./factors-edit.ts",
+    "./report-extract": "./report-extract.ts",
+    "./report-merge": "./report-merge.ts",
+    "./document-model": "./document-model.ts",
+    "./document-read": "./document-read.ts",
+    "./ingest-core": "./ingest-core.ts",
+    "./pdf-node": "./parsers-report.ts",
+    "./marker-groups-prompt": "./marker-groups-prompt.ts",
+    "./treatment-infer": "./treatment-infer.ts",
+    "./finding-generate": "./finding-generate.ts",
+    "./finding-assemble": "./finding-assemble.ts",
+    "./finding-regroup": "./finding-regroup.ts",
+    "./pinned-queries": "./pinned-queries.ts",
+    "./section-labels": "./section-labels.ts",
+    "./benchmarks/retry-corrections": "./benchmarks/retry-corrections.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "prompt:golden": "tsx tests/gen-prompt-golden.ts",
+    "bench:retry": "tsx benchmarks/retry-corrections.ts --preview"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
+    "pdfjs-dist": "^6.2.108"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": {
+      "optional": true
+    },
+    "pdfjs-dist": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "tsx": "^4.22.3",
+    "vitest": "^4.1.8"
+  }
+}
