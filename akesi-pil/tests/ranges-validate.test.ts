@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validate, IMPERIAL_CONVERTS } from "@pablotech/akesi-pil/ranges-prompt";
-import type { RangeAIResponse } from "@pablotech/akesi-pil/ranges-prompt";
+import { validate, IMPERIAL_CONVERTS } from "@pablotech/akesi/ranges-prompt";
+import type { RangeAIResponse } from "@pablotech/akesi/ranges-prompt";
 
 // W71 — `validate` had no tests at all, and it is the only thing standing between a model's answer
 // and a range drawn on a patient's marker chart. Every branch below is a way a plausible-looking

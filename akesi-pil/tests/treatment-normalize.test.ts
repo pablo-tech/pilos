@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalizeDate, parseSince, normalizeTreatments } from "@pablotech/akesi-pil/treatment-normalize";
+import { normalizeDate, parseSince, normalizeTreatments } from "@pablotech/akesi/treatment-normalize";
 
 describe("normalizeDate", () => {
   it("parses 'Since Month Year'", () => {

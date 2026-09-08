@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { deltaForSeries, markerDeltas } from "@pablotech/akesi-pil/marker-deltas";
-import type { Client, MarkerResult } from "@pablotech/akesi-pil/types";
+import { deltaForSeries, markerDeltas } from "@pablotech/akesi/marker-deltas";
+import type { Client, MarkerResult } from "@pablotech/akesi/types";
 
 function r(marker: string, date: string, value: number, unit = "mmHg"): MarkerResult {
   return { marker, group: "Echo", source: "Imaging", date, value, unit };

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { canonicalImagingMarker, isKnownImagingMarker, CANONICAL_IMAGING_MARKERS } from "@pablotech/akesi-pil/imaging-catalog";
+import { canonicalImagingMarker, isKnownImagingMarker, CANONICAL_IMAGING_MARKERS } from "@pablotech/akesi/imaging-catalog";
 
 describe("canonicalImagingMarker", () => {
   it("collapses LVEF phrasings to one canonical name", () => {

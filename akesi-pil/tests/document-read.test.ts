@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { readDocumentAsJson } from "@pablotech/akesi-pil/document-model";
+import { readDocumentAsJson } from "@pablotech/akesi/document-model";
 import {
   capDocuments,
   documentsPromptBlock,
@@ -8,8 +8,8 @@ import {
   MAX_DOCUMENT_CHARS,
   MAX_DOCUMENTS_TOTAL_CHARS,
   type DocumentReading,
-} from "@pablotech/akesi-pil/document-read";
-import { validate as validateReport, type ProposedReport } from "@pablotech/akesi-pil/report-extract";
+} from "@pablotech/akesi/document-read";
+import { validate as validateReport, type ProposedReport } from "@pablotech/akesi/report-extract";
 
 function anthropicStub(response: unknown) {
   const create = vi.fn().mockResolvedValue(response);

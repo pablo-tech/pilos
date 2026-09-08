@@ -1,4 +1,4 @@
-# `@pablotech/neuro-pil`
+# `@pablotech/neuro`
 
 *Greek νεῦρον, sinew or cord, plus πῖλος, felted wool — **nerve felt**, the tangled mesh between
 nerve cell bodies where most synaptic connection happens. It is the connections, not the cell
@@ -235,7 +235,7 @@ unnecessarily and trusting someone's memory.
 ### After: ask the graph
 
 ```ts
-import { defineDag, canonicalFor, driftedKeys } from "@pablotech/neuro-pil";
+import { defineDag, canonicalFor, driftedKeys } from "@pablotech/neuro";
 
 // The expensive derivation. In production this is an LLM call — money and
 // seconds per run. It is never called just to check whether it's still valid.
@@ -390,7 +390,7 @@ model call, nothing structural can. `compare.ts` is the one concession to that: 
 versions over a fixed case set, score each result, compare the means.
 
 ```ts
-import { compareBrains } from "@pablotech/neuro-pil/compare";
+import { compareBrains } from "@pablotech/neuro/compare";
 
 const { perVersion } = await compareBrains(
   cases,                      // a fixed set — the point is that it does not move between runs
@@ -431,14 +431,14 @@ importing it is a deliberate act rather than something a bundler discovers for y
 
 | Import | From |
 |--------|------|
-| `defineDag`, `isStamped`, types `Dag` / `DagNode` / `NodeKind` | `@pablotech/neuro-pil` |
-| `stableStringify`, `canonicalFor`, `canonicalMap`, `driftedKeys` | `@pablotech/neuro-pil` |
-| `validate`, `sliceParity`, types `Finding` / `ValidateOptions` | `@pablotech/neuro-pil` |
-| `renderMermaid`, `extractDagBlock`, `writeDagBlock`, `DEFAULT_MERMAID_MARKERS` | `@pablotech/neuro-pil` |
-| `sha256hex12` → `string` | `@pablotech/neuro-pil/hash-node` |
-| `sha256hex12` → `Promise<string>` | `@pablotech/neuro-pil/hash-web` |
-| `dagFromFiles`, `parseVaultNode`, `extractFrontmatter`, `parseFrontmatterBlock` | `@pablotech/neuro-pil/markdown` |
-| `compareBrains` (async), types `Comparison` / `VersionScore` | `@pablotech/neuro-pil/compare` |
+| `defineDag`, `isStamped`, types `Dag` / `DagNode` / `NodeKind` | `@pablotech/neuro` |
+| `stableStringify`, `canonicalFor`, `canonicalMap`, `driftedKeys` | `@pablotech/neuro` |
+| `validate`, `sliceParity`, types `Finding` / `ValidateOptions` | `@pablotech/neuro` |
+| `renderMermaid`, `extractDagBlock`, `writeDagBlock`, `DEFAULT_MERMAID_MARKERS` | `@pablotech/neuro` |
+| `sha256hex12` → `string` | `@pablotech/neuro/hash-node` |
+| `sha256hex12` → `Promise<string>` | `@pablotech/neuro/hash-web` |
+| `dagFromFiles`, `parseVaultNode`, `extractFrontmatter`, `parseFrontmatterBlock` | `@pablotech/neuro/markdown` |
+| `compareBrains` (async), types `Comparison` / `VersionScore` | `@pablotech/neuro/compare` |
 
 Two things that catch people. `sha256hex12` is **synchronous** in `hash-node` and **asynchronous**
 in `hash-web` — `SubtleCrypto` has no sync digest — so the two are not drop-in substitutes even

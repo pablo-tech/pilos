@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { reconcileGroups, markerGroupsHashOf, distinctMarkerNames } from "@pablotech/akesi-pil/marker-groups-prompt";
-import { UNCATEGORIZED } from "@pablotech/akesi-pil/system-groups";
-import type { Client, MarkerResult } from "@pablotech/akesi-pil/types";
+import { reconcileGroups, markerGroupsHashOf, distinctMarkerNames } from "@pablotech/akesi/marker-groups-prompt";
+import { UNCATEGORIZED } from "@pablotech/akesi/system-groups";
+import type { Client, MarkerResult } from "@pablotech/akesi/types";
 
 const reading = (marker: string): MarkerResult => ({
   marker, group: "Panel", source: "Blood", date: "2026-01-01", value: 1, unit: "x",

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { reportTitleOf, reportDateOf, REPORT_KIND_LABEL } from "@pablotech/akesi-pil/report-title";
-import type { SourceRecord } from "@pablotech/akesi-pil/types";
+import { reportTitleOf, reportDateOf, REPORT_KIND_LABEL } from "@pablotech/akesi/report-title";
+import type { SourceRecord } from "@pablotech/akesi/types";
 
 const rec = (over: Partial<SourceRecord> = {}): SourceRecord =>
   ({ id: "s1", sha256: "x", kind: "lab", file: "f", originalName: "o.xlsx", importedAt: "2026-03-04T10:00:00Z", ...over }) as SourceRecord;

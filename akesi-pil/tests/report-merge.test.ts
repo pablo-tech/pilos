@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { applyReportContribution, applySourceReadings, pruneOrphanImagingMarkers, diseaseKey } from "@pablotech/akesi-pil/report-merge";
-import type { Client, MarkerResult, SourceRecord } from "@pablotech/akesi-pil/types";
+import { applyReportContribution, applySourceReadings, pruneOrphanImagingMarkers, diseaseKey } from "@pablotech/akesi/report-merge";
+import type { Client, MarkerResult, SourceRecord } from "@pablotech/akesi/types";
 
 function base(): Client {
   return { displayName: "Test", dob: "1980-01-01", gender: "male", watchlist: [], results: [], factors: { diseases: [] } };

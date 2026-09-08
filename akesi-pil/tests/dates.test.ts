@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { endOfMonth, formatDay, isCompleteDate } from "@pablotech/akesi-pil/dates";
+import { endOfMonth, formatDay, isCompleteDate } from "@pablotech/akesi/dates";
 
 describe("endOfMonth", () => {
   it("coerces a month-only value to its last day", () => {

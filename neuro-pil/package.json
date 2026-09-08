@@ -1,5 +1,5 @@
 {
-  "name": "@pablotech/neuro-pil",
+  "name": "@pablotech/neuro",
   "version": "0.1.22",
   "description": "Dependency-graph, staleness and canonical-hashing engine: record what a value was derived from, and know later whether that evidence has moved. Domain-free.",
   "type": "module",

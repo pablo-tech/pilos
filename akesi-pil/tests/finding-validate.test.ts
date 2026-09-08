@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LEAF_OWNED_BASIS_KEYS, assembleFinding, validateFindingResponse, validateFindingWithInputs } from "@pablotech/akesi-pil/finding-assemble";
+import { LEAF_OWNED_BASIS_KEYS, assembleFinding, validateFindingResponse, validateFindingWithInputs } from "@pablotech/akesi/finding-assemble";
 
 function rep(s: string, n: number) {
   return Array.from({ length: n }, () => s).join(" ");
@@ -601,7 +601,7 @@ describe("basis accepts both shapes end to end", () => {
 // so three full generations looked like one long hang. This pins the reporting, not the retrying.
 describe("generateFindingResponse reports why each attempt was rejected", () => {
   it("calls onAttemptFailed with the attempt number and the validation message", async () => {
-    const { generateFindingResponse } = await import("@pablotech/akesi-pil/finding-generate");
+    const { generateFindingResponse } = await import("@pablotech/akesi/finding-generate");
     const bad = { content: [{ type: "text", text: '{"progression":{}}' }], usage: {} };
     const anthropic = {
       messages: { stream: () => ({ finalMessage: async () => bad }) },
@@ -626,7 +626,7 @@ describe("generateFindingResponse reports why each attempt was rejected", () => 
   // "fix exactly this problem", so the model fixed the named one and broke another, never once seeing
   // the accumulated list. Every prior rejection now goes back in.
   it("carries EVERY prior rejection into the next correction, not just the latest", async () => {
-    const { generateFindingResponse } = await import("@pablotech/akesi-pil/finding-generate");
+    const { generateFindingResponse } = await import("@pablotech/akesi/finding-generate");
     // A different failure each attempt, so a correction carrying only the latest would show one entry.
     const bodies = ['{"progression":{}}', "not json at all", '{"progression":{},"disease":[]}'];
     const sent: string[] = [];

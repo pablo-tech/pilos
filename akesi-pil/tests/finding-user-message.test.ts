@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildUserMessage, describeProfile, markerLevelBlocks, populatedNoteEntries, plannedLabels } from "@pablotech/akesi-pil/finding-generate";
-import type { Client } from "@pablotech/akesi-pil/types";
+import { buildUserMessage, describeProfile, markerLevelBlocks, populatedNoteEntries, plannedLabels } from "@pablotech/akesi/finding-generate";
+import type { Client } from "@pablotech/akesi/types";
 
 // W76 — finding-generate.ts is 81% lines but 60% BRANCHES, and every uncovered branch is a section
 // that renders differently, or not at all, for some patient shape. That failure is silent by

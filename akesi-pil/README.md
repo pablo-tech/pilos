@@ -1,4 +1,4 @@
-# `@pablotech/akesi-pil`
+# `@pablotech/akesi`
 
 *Ἀκεσώ — Akeso, daughter of Asclepius, goddess of the **process** of curing rather than the cure
 itself; that was her sister Panacea's. The name is the disclaimer: this package builds the reasoning
@@ -372,11 +372,11 @@ file, deliberately: a barrel over twenty-nine modules would make every consumer'
 all of them. Every import names its module directly, and the subpath is the module's own filename:
 
 ```ts
-import { bucketOf, groupByName } from "@pablotech/akesi-pil/treatment-bucket";
-import { unmappedConvertible, normalizeSeries } from "@pablotech/akesi-pil/unit-systems";
-import { buildUserMessage, SYSTEM_PROMPT } from "@pablotech/akesi-pil/finding-generate";
-import { assembleFinding } from "@pablotech/akesi-pil/finding-assemble";
-import type { Client, TreatmentItem } from "@pablotech/akesi-pil/types";
+import { bucketOf, groupByName } from "@pablotech/akesi/treatment-bucket";
+import { unmappedConvertible, normalizeSeries } from "@pablotech/akesi/unit-systems";
+import { buildUserMessage, SYSTEM_PROMPT } from "@pablotech/akesi/finding-generate";
+import { assembleFinding } from "@pablotech/akesi/finding-assemble";
+import type { Client, TreatmentItem } from "@pablotech/akesi/types";
 ```
 
 Every subpath in [`package.json`](package.json)'s `exports` is isomorphic — safe in a browser

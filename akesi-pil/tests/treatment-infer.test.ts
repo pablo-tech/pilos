@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validate, type ProposedTreatment } from "@pablotech/akesi-pil/treatment-infer";
+import { validate, type ProposedTreatment } from "@pablotech/akesi/treatment-infer";
 
 function ok(): ProposedTreatment {
   return { name: "Lipitor", kind: "drug" };

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { findingRequestParams, FINDING_MAX_TOKENS } from "@pablotech/akesi-pil/finding-generate";
+import { findingRequestParams, FINDING_MAX_TOKENS } from "@pablotech/akesi/finding-generate";
 
 // The adaptive-thinking heuristic and the token budget were once duplicated between this module
 // and a caller, so a change to either had to be made twice or the two Findings diverged.

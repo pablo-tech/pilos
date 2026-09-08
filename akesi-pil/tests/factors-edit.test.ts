@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { normalizeClientDraft, capFirst } from "@pablotech/akesi-pil/factors-edit";
-import type { Client } from "@pablotech/akesi-pil/types";
+import { normalizeClientDraft, capFirst } from "@pablotech/akesi/factors-edit";
+import type { Client } from "@pablotech/akesi/types";
 
 function baseClient(): Client {
   return { displayName: "Test", dob: "1980-01-01", gender: "male", watchlist: [], results: [], factors: {} };

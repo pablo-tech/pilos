@@ -5,8 +5,8 @@ import {
   validateRegroup,
   resolveRegroup,
   type RegroupResponse,
-} from "@pablotech/akesi-pil/finding-regroup";
-import type { Client } from "@pablotech/akesi-pil/types";
+} from "@pablotech/akesi/finding-regroup";
+import type { Client } from "@pablotech/akesi/types";
 
 function ai(intervention: string, purpose = "") {
   return { intervention, purpose, pros: [], cons: [], alternatives: [], recommendation: "" };

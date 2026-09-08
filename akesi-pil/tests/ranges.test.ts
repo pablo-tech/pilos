@@ -2,8 +2,8 @@ import { execFileSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
-import { resolveRange, ageYears, computeZones, currentZoneStatus } from "@pablotech/akesi-pil/ranges";
-import type { Client, PersonalizedRange } from "@pablotech/akesi-pil/types";
+import { resolveRange, ageYears, computeZones, currentZoneStatus } from "@pablotech/akesi/ranges";
+import type { Client, PersonalizedRange } from "@pablotech/akesi/types";
 
 const range = (factorsHash: string): PersonalizedRange =>
   ({ low: 10, high: 20, unit: "u", explanation: "", factorsHash } as PersonalizedRange);
@@ -63,7 +63,7 @@ describe("ageYears", () => {
     (tz) => {
       const out = execFileSync(
         "npx",
-        ["tsx", "-e", `import { ageYears } from "@pablotech/akesi-pil/ranges"; process.stdout.write(String(ageYears("2000-06-29", new Date("2026-06-28T12:00:00Z"))));`],
+        ["tsx", "-e", `import { ageYears } from "@pablotech/akesi/ranges"; process.stdout.write(String(ageYears("2000-06-29", new Date("2026-06-28T12:00:00Z"))));`],
         { cwd: resolve(dirname(fileURLToPath(import.meta.url)), ".."), env: { ...process.env, TZ: tz }, encoding: "utf8" },
       );
       expect(out.trim()).toBe("25");
