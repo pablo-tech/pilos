@@ -246,8 +246,8 @@ deliberate: [`ARCHITECTURE.md`](ARCHITECTURE.md) is explicit that neither packag
 and that a host is what joins them. The host side is the whole join, and it is this short:
 
 ```ts
-import { compareBrains } from "@pablotech/neuro-pil/compare";
-import { CASES, VERSIONS, runCase, score } from "@pablotech/akesi-pil/benchmarks/retry-corrections";
+import { compareBrains } from "@pablotech/neuro/compare";
+import { CASES, VERSIONS, runCase, score } from "@pablotech/akesi/benchmarks/retry-corrections";
 
 const anthropic = new Anthropic();
 const cases = withReplicates(CASES, replicates);

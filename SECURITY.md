@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the latest published version of each package (`@pablotech/akesi-pil`, `@pablotech/neuro-pil`)
+Only the latest published version of each package (`@pablotech/akesi`, `@pablotech/neuro`)
 is supported.
 
 ## Scope
