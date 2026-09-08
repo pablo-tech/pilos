@@ -2,7 +2,6 @@
   "name": "@pablotech/akesi-pil",
   "version": "0.1.21",
   "description": "Schema-constrained clinical reasoning over lab and marker data, where every constraint stated to the model in prose is re-enforced in code on the response.",
-  "private": true,
   "type": "module",
   "main": "index.ts",
   "types": "index.ts",

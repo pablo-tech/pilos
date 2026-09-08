@@ -1,6 +1,7 @@
 # pilos
 
 [![CI](https://github.com/pablo-tech/pilos/actions/workflows/ci.yml/badge.svg)](https://github.com/pablo-tech/pilos/actions/workflows/ci.yml)
+[![Community Health](https://img.shields.io/badge/dynamic/json?url=https://api.github.com/repos/pablo-tech/pilos/community/profile&query=$.health_percentage&suffix=%25&label=community%20health)](https://github.com/pablo-tech/pilos/community)
 
 *πῖλος — felt: cloth with no warp and no weft, holding together only by how the fibres catch on one
 another. Both packages here carry the root. More on that, and on νεῦρον and Ἀκεσώ,
