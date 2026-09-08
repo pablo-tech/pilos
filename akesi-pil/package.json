@@ -1,6 +1,6 @@
 {
   "name": "@pablotech/akesi",
-  "version": "0.1.24",
+  "version": "0.1.25",
   "description": "Schema-constrained clinical reasoning over lab and marker data, where every constraint stated to the model in prose is re-enforced in code on the response.",
   "type": "module",
   "main": "index.ts",
