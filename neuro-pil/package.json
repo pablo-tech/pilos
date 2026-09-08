@@ -6,6 +6,14 @@
   "type": "module",
   "main": "index.ts",
   "types": "index.ts",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "*.ts",
+    "benchmarks/**/*.ts",
+    "!tests"
+  ],
   "exports": {
     ".": "./index.ts",
     "./hash-node": "./hash-node.ts",
