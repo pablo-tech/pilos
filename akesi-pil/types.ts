@@ -128,7 +128,7 @@ export interface TreatmentItem {
   id: string;
   pinned?: boolean;
   name: string;
-  // M104 — superseded by doseAmount/doseUnit/doseFrequency (below) for anything entered through the
+  // Superseded by doseAmount/doseUnit/doseFrequency (below) for anything entered through the
   // edit form; kept as the display/matching fallback for un-migrated records (see formatDose() in
   // treatment-bucket.ts, and whatever one-time conversion a host runs).
   dose?: string;
@@ -429,15 +429,15 @@ export interface ClientFinding {
   // findings without it still render (StudyResults falls back to a flat list).
   studyResults?: { study: string; result: string; group?: string }[];
   // One inference per populated Note row (factors.noteEntries); keyed by `noteId` rather than a
-  // label (M92 — unlike Study's short hand-picked `focus` labels, a note's `text` is unbounded
-  // free prose, unreliable for the LLM to echo back verbatim for pairing).
+  // label — unlike Study's short hand-picked `focus` labels, a note's `text` is unbounded
+  // free prose, unreliable for the LLM to echo back verbatim for pairing.
   noteResults?: { noteId: string; result: string; group?: string }[];
-  // M94/M97 §C — one inference per known allergy (factors.allergies) / family history entry
+  // One inference per known allergy (factors.allergies) / family history entry
   // (factors.familyHistory), keyed by id like noteResults, paired by array position (no natural
   // unique label to echo back).
   allergyResults?: { allergyId: string; result: string; group?: string }[];
   familyResults?: { familyId: string; result: string; group?: string }[];
-  // M102 — mirrors allergyResults/familyResults exactly, for Reports diagnoses (factors.diseases),
+  // Mirrors allergyResults/familyResults exactly, for Reports diagnoses (factors.diseases),
   // which previously had no AI-paired leaf at all.
   diseaseResults?: { diseaseId: string; result: string; group?: string }[];
   disease: { group: string; finding: string }[];

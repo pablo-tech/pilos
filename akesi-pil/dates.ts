@@ -27,7 +27,7 @@ export function formatDay(iso: string | undefined | null): string {
   return `${MONTHS[Number(m) - 1]} ${Number(d)}, ${y}`;
 }
 
-// M107 — a type="date" input fires `change` on every keystroke inside an already-plausible year
+// A type="date" input fires `change` on every keystroke inside an already-plausible year
 // segment, zero-padded (e.g. typing just "2" of "2026" reports "0002-08-15") — not only once the
 // full year is typed. A plain truthiness/length check on `value` fires on that first padded digit.
 // Require a 4-digit year that isn't itself a padding artifact (<1000) before treating it as done.

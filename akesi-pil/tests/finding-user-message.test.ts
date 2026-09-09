@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { buildUserMessage, describeProfile, markerLevelBlocks, populatedNoteEntries, plannedLabels } from "@pablotech/akesi/finding-generate";
 import type { Client } from "@pablotech/akesi/types";
 
-// W76 — finding-generate.ts is 81% lines but 60% BRANCHES, and every uncovered branch is a section
+// finding-generate.ts is 81% lines but 60% BRANCHES, and every uncovered branch is a section
 // that renders differently, or not at all, for some patient shape. That failure is silent by
 // construction: a dropped section does not error, the Finding just comes back thinner, and no
 // existing test would notice because the lines around it still execute.

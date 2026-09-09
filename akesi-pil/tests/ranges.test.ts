@@ -32,7 +32,7 @@ describe("ageYears", () => {
     expect(ageYears("not-a-date", asOf)).toBeNull();
   });
 
-  // W72 — the day BEFORE a birthday, which is where the bug lived. Every copy of this function parsed
+  // The day BEFORE a birthday is where the bug lived. Every copy of this function parsed
   // the DOB as UTC and then read it back with LOCAL getters, so west of Greenwich the date component
   // came back one day early and the decrement did not fire. Measured before the fix:
   //

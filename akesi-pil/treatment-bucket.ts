@@ -12,7 +12,7 @@ import { formatDay } from "./dates";
 
 export type Bucket = "past" | "ongoing" | "planned";
 
-// M102 Phase 1 — the display label for a bucket badge (Treatment's Ungrouped view, which
+// The display label for a bucket badge (Treatment's Ungrouped view, which
 // otherwise concatenates all three buckets with no other visual distinction).
 export const BUCKET_LABEL: Record<Bucket, string> = { ongoing: "Ongoing", planned: "Planned", past: "Past" };
 
@@ -73,7 +73,7 @@ export function collapseByName(items: TreatmentItem[]): TreatmentItem[] {
       id: latest.id,
       name: latest.name,
       dose: latest.dose,
-      // M104 — carry the structured dose fields through too, same "latest row wins" rule as `dose`
+      // Carry the structured dose fields through too, same "latest row wins" rule as `dose`
       // itself; formatDose() prefers these over `dose`, so dropping them here would silently blank
       // out any collapsed-view display for a titration step entered through the new Amount/Unit form.
       doseAmount: latest.doseAmount,
@@ -110,16 +110,16 @@ export interface NamedTreatmentGroup {
   rows: TreatmentItem[];
 }
 
-// M108 — primary group order: Planned drugs first, then Ongoing, then Past — recency of use. A
+// Primary group order: Planned drugs first, then Ongoing, then Past — recency of use. A
 // group's bucket is its NEWEST row's (rows[0], already sorted descending below), so a drug
 // currently mid-titration reads as Ongoing even if an older row of the same drug once looked
-// Planned. M109 — within one bucket, groups sort alphabetically (secondary key), not entry order.
+// Planned. Within one bucket, groups sort alphabetically (secondary key), not entry order.
 const GROUP_BUCKET_ORDER: Record<Bucket, number> = { planned: 0, ongoing: 1, past: 2 };
 
-// M103 — the Medicine audit view's grouping: every raw row for a drug together, unlike
+// The Medicine audit view's grouping: every raw row for a drug together, unlike
 // collapseByName which discards all but one representative row per name.
 //
-// M105 — rows sorted newest-first (start descending): the table must always read newest-to-oldest,
+// Rows sorted newest-first (start descending): the table must always read newest-to-oldest,
 // top to bottom. dateGaps() below is written against this same descending order.
 export function groupByName(items: TreatmentItem[], today: string): NamedTreatmentGroup[] {
   const byName = new Map<string, TreatmentItem[]>();
@@ -140,31 +140,31 @@ export function groupByName(items: TreatmentItem[], today: string): NamedTreatme
 
 export type DateGapVerdict = "ok" | "gap" | "overlap";
 
-// M104 — whole-day distance between two full YYYY-MM-DD dates (nextStart - end), or null if
+// Whole-day distance between two full YYYY-MM-DD dates (nextStart - end), or null if
 // either isn't full day precision (legacy month/year-only can't do calendar-day arithmetic).
 function daysBetween(a: string, b: string): number | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(a) || !/^\d{4}-\d{2}-\d{2}$/.test(b)) return null;
   return Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
 }
 
-// M103 — one verdict per consecutive pair in an already-sorted `rows` (see groupByName), comparing
+// One verdict per consecutive pair in an already-sorted `rows` (see groupByName), comparing
 // the OLDER row's end against the NEWER row's start: no end (still ongoing) or an unknown start
 // can't be judged, so those read "ok" rather than a false positive. Length is rows.length - 1.
 //
-// M104 — a titration step ending 2026-06-30 with the next starting 2026-07-01 is back-to-back
+// A titration step ending 2026-06-30 with the next starting 2026-07-01 is back-to-back
 // coverage, not a gap: prefer day-precision arithmetic (0 or 1 day apart both read "ok") over the
 // cmp() prefix comparison, which only recognized an exact same-day handoff as contiguous. Falls
 // back to cmp() when either date isn't full day precision.
 //
-// M105 — `rows` is newest-first (groupByName sorts descending), so for the pair at (i, i+1), i+1
+// `rows` is newest-first (groupByName sorts descending), so for the pair at (i, i+1), i+1
 // is the OLDER row and i is the NEWER one — verdict[i] describes the gap/overlap between them.
 //
-// M106 — symmetric with the gap side: a 1-day overlap (the newer row starts the day before the
+// Symmetric with the gap side: a 1-day overlap (the newer row starts the day before the
 // older one's recorded end — a rounding/entry-day wobble, not a real double-dosing period) also
 // reads "ok". Only a 2+ day overlap is worth flagging. This only applies to the day-precision
 // branch — the cmp() fallback (month/year-only dates) has no day-scale magnitude to be lenient about.
 //
-// M110 — an AM row and a PM row covering the same dates aren't double-dosing, they're a twice-daily
+// An AM row and a PM row covering the same dates aren't double-dosing, they're a twice-daily
 // split — only downgrades a would-be "overlap" (a real gap between an AM and a PM step is still a
 // gap; this isn't a blanket "ignore timing" exemption).
 function splitByTiming(a: TreatmentItem, b: TreatmentItem): boolean {
@@ -198,7 +198,7 @@ export function dateGaps(rows: TreatmentItem[]): DateGapVerdict[] {
 // The verbatim label a PLANNED treatment presents to the Finding (Patient Plan Action, treatmentGroups
 // patient ref, planAssessmentRows key) — its name plus dose when present. Must be identical everywhere
 // the ref is matched (finding-generate input block, finding-assemble expected set, treatment-groups resolve).
-// M104 — the display string for a dose: structured amount/unit/frequency when the record has been
+// The display string for a dose: structured amount/unit/frequency when the record has been
 // entered/edited through the new form, reproducing the pre-existing "6mg/week" convention so
 // treatmentLabel()'s output (and everything matched against it) doesn't change shape; falls back to
 // the legacy free-text `dose` string for anything a host has not yet migrated.

@@ -6,7 +6,7 @@ function r(marker: string, date: string, value: number, unit = "mmHg"): MarkerRe
   return { marker, group: "Echo", source: "Imaging", date, value, unit };
 }
 
-describe("deltaForSeries — mixed-unit series (W14)", () => {
+describe("deltaForSeries — mixed-unit series", () => {
   it("reconciles a US+SI series to one canonical unit before subtracting", () => {
     const d = deltaForSeries([
       { marker: "Glucose", group: "Blood", source: "Blood", date: "2024-01-01", value: 90, unit: "mg/dL" },

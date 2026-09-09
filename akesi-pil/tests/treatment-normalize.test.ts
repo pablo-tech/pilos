@@ -64,7 +64,7 @@ describe("normalizeTreatments (legacy fold)", () => {
   });
 
   it("is idempotent when treatments already exist", () => {
-    // W64 — a TreatmentItem carries an id; normalizeTreatments returns the array UNTOUCHED when
+    // A TreatmentItem carries an id; normalizeTreatments returns the array UNTOUCHED when
     // one is present, which is what `toBe` (identity) below asserts.
     const treatments = [{ id: "t1", name: "X", kind: "drug" as const, start: "2025-01" }];
     expect(normalizeTreatments({ treatments, medications: [{ drug: "Y" }] })).toBe(treatments);

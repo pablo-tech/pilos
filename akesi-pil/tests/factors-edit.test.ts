@@ -24,7 +24,7 @@ describe("normalizeClientDraft", () => {
     };
     const out = normalizeClientDraft(c);
     // Authored dates are coerced to the last day of a month-only value (the migration rule).
-    // W64 — the id rides through untouched; normalizeClientDraft rewrites content, never identity.
+    // The id rides through untouched; normalizeClientDraft rewrites content, never identity.
     expect(out.factors!.diseases![0]).toEqual({ id: "d1", date: "2024-01-31", diagnostic: "Hyperlipidemia", icdCodes: ["E78.5"] });
     expect(out.factors!.treatments![0]).toEqual({ id: "t1", name: "Enclomiphene", dose: "12.5mg", kind: "drug", start: "2026-01-31" });
     expect(out.factors!.noteEntries![0]).toEqual({ id: "n1", text: "Ask about statin dose" });

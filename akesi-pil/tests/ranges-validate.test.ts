@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { validate, IMPERIAL_CONVERTS } from "@pablotech/akesi/ranges-prompt";
 import type { RangeAIResponse } from "@pablotech/akesi/ranges-prompt";
 
-// W71 — `validate` had no tests at all, and it is the only thing standing between a model's answer
+// `validate` used to have no tests at all, and it is the only thing standing between a model's answer
 // and a range drawn on a patient's marker chart. Every branch below is a way a plausible-looking
 // response becomes a clinically wrong picture: an inverted range shades "safe" over the danger zone,
 // a unit mismatch judges ApoB in mg/dL against a range in g/L.

@@ -22,7 +22,7 @@ export interface FindingAIResponse {
   };
   /** Leaf-owned: absent from a core response, present on an older stored finding. */
   studyResults?: { study: string; result: string; group: string }[];
-  // M92 — no `noteId`/label field here: a note has no short verbatim-echoable label like Study's
+  // No `noteId`/label field here: a note has no short verbatim-echoable label like Study's
   // `focus`, so entries are paired back to `factors.noteEntries` by array position, not content.
   // See assembleFinding's `meta.noteIds` (the caller supplies the parallel id array).
   /** Leaf-owned: absent from a core response, present on an older stored finding. */
@@ -673,7 +673,7 @@ export function assembleFinding(
     inputsHash: string;
     nodeHashes: Record<string, string>;
     generatedBy: ClientFinding["generatedBy"];
-    // M92 — the ordered ids of the Note entries the prompt presented (populatedNoteEntries), zipped
+    // The ordered ids of the Note entries the prompt presented (populatedNoteEntries), zipped
     // positionally against parsed.noteResults since a note has no label the LLM could echo back.
     noteIds: string[];
     // 06/Gap A — injected rather than looked up here, so this module carries no dependency on

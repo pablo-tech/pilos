@@ -36,7 +36,7 @@ const IMPERIAL_TO_METRIC: Record<string, { unit: string; factor: number }> = {
   "in³": { unit: "cm³", factor: 16.387064 },
 };
 
-// M93 — markers where the metric unit IS the US-prevailing clinical convention, so the
+// Markers where the metric unit IS the US-prevailing clinical convention, so the
 // generic PHYSICAL_TO_IMPERIAL unit-keyed table must NOT convert them (e.g. visceral adipose
 // tissue mass is reported in grams in US practice too, never ounces/lb — the owner's example,
 // extended here to the sibling DEXA body-composition markers sharing the same convention).
@@ -49,7 +49,7 @@ export const PHYSICAL_NO_CONVERT = new Set<string>([
   "Subcutaneous adipose tissue area",
 ]);
 
-// M93 — cosmetic unit-STRING variants for the same physical unit, straight from different lab
+// Cosmetic unit-STRING variants for the same physical unit, straight from different lab
 // source formats (values stay as-reported per the module doc above; only the DISPLAYED label is
 // canonicalized, never the stored data). eGFR renders identically regardless of which lab
 // formatted its unit string.
@@ -61,7 +61,7 @@ export function canonicalUnit(unit: string): string {
   return UNIT_ALIAS[unit] ?? unit;
 }
 
-// M93 — compound clinical units that are, on research, reported identically in US and SI/
+// Compound clinical units that are, on research, reported identically in US and SI/
 // international practice — no US-customary form exists in routine use, so no conversion ever
 // applies regardless of marker. NEEDS VERIFICATION against a clinical reference before treating
 // as final; each entry's marker(s) are noted so a reviewer can check the specific convention.
@@ -84,7 +84,7 @@ export interface AnalyteRule {
 }
 export const ANALYTE: Record<string, AnalyteRule> = {
   // Lipid/glucose panel — mirrors the in-repo ingest table (parsers/healthmatters.ts
-  // NORMALIZE, in production since W1); 1/k equals that table's factor (cross-checked by test).
+  // NORMALIZE); 1/k equals that table's factor (cross-checked by test).
   Glucose: { us: "mg/dL", si: "mmol/L", k: 1 / 18.02 }, // glucose MW 180.16
   "Estimated Average Glucose (eAG)": { us: "mg/dL", si: "mmol/L", k: 1 / 18.02 },
   "Total Cholesterol": { us: "mg/dL", si: "mmol/L", k: 1 / 38.67 }, // chol MW 386.65
@@ -133,7 +133,7 @@ export const ANALYTE: Record<string, AnalyteRule> = {
   // Monovalent electrolytes: mEq/L (US) and mmol/L (SI) are numerically identical (valence 1).
   "Potassium, Serum (Kalium)": { us: "mEq/L", si: "mmol/L", k: 1 },
   "Sodium, Serum (Natrium)": { us: "mEq/L", si: "mmol/L", k: 1 },
-  // M93 — urine albumin/creatinine ratio: US commonly reports mg/g creatinine; UK/Canada/
+  // Urine albumin/creatinine ratio: US commonly reports mg/g creatinine; UK/Canada/
   // Australia and KDIGO's international staging table use mg/mmol creatinine. Factor derived
   // from creatinine MW 113.12 g/mol (1 g creatinine = 8.84 mmol, so mg/mmol = mg/g × 0.1131).
   // NEEDS VERIFICATION against a clinical reference before relying on this — flagged per the
@@ -144,7 +144,7 @@ export const ANALYTE: Record<string, AnalyteRule> = {
 
 // The units that genuinely differ US↔SI, or need an explicit verified-non-convertible decision —
 // used by the coverage gate to flag any (marker, unit) pair carrying one of these WITHOUT a rule
-// (so a gap can never be silent). M93 extended this beyond molar-concentration units to the
+// (so a gap can never be silent) — extended beyond molar-concentration units to the
 // compound/physical units researched above.
 export const CONVERTIBLE_UNIT_CLASS = new Set([
   "mg/dL", "ng/dL", "pg/mL", "µg/dL", "ug/dL", "mcg/dL", "ng/mL",

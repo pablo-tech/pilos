@@ -47,7 +47,7 @@ describe("isCompleteDate", () => {
   it("is false for an empty string", () => {
     expect(isCompleteDate("")).toBe(false);
   });
-  // M107: typing "2" of "2026" into a date input reports "0002-08-15" — a zero-padded partial year,
+  // Typing "2" of "2026" into a date input reports "0002-08-15" — a zero-padded partial year,
   // not a real one. Must not be mistaken for complete.
   it("is false for a zero-padded partial year under 1000", () => {
     expect(isCompleteDate("0002-08-15")).toBe(false);

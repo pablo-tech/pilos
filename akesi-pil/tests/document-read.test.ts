@@ -106,7 +106,7 @@ describe("documentsPromptBlock", () => {
   });
 });
 
-// W75 — the caps existed but lived in the browser, so the relay accepted whatever a non-browser
+// The caps existed but lived in the browser, so the relay accepted whatever a non-browser
 // caller sent. These assert the rule itself, on the shared helper both sides now call.
 describe("capDocuments", () => {
   it("leaves ordinary documents exactly as they are", () => {

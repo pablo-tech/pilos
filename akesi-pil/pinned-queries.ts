@@ -61,7 +61,7 @@ export function pinnedQueries(client: Client): PinnedQuery[] {
     if (t) out.push({ section, label: clip(t) });
   };
 
-  // M74 reversed, on the owner's instruction (2026-08-20): a ratio name used to be barred from the
+  // On the owner's instruction (2026-08-20): a ratio name used to be barred from the
   // prompt outright. As an area of query it is safe and useful — "look at the TG/HDL ratio" is a
   // topic, not a reading — and the block below is explicit that it is not data.
   for (const name of client.pinnedRatios ?? []) push("Marker ratios", name);

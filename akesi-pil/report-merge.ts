@@ -297,7 +297,7 @@ export interface SourceEditPatch {
   date: string;
 }
 
-// M66 P3 — patch ONE source and its linked DiseaseEntry rows (by position, in sourceId order) in
+// Patch ONE source and its linked DiseaseEntry rows (by position, in sourceId order) in
 // one mutation, keyed by sourceId — the patch counterpart to removeSource's drop. `diseasePatches`
 // must line up 1:1 with diseasesForSource(sourceId)'s current order; a short/mismatched array is
 // ignored past its own length (no add/remove of diagnoses here). Raw values in — normalizeClientDraft

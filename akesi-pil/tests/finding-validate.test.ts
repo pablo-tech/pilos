@@ -118,7 +118,7 @@ describe("validateFindingResponse", () => {
     expect(() => validateFindingResponse(baseValid())).not.toThrow();
   });
 
-  // W65 — ABSENT is now valid: aiOnPlan owns planAssessmentRows and the core no longer narrates it.
+  // ABSENT is now valid: aiOnPlan owns planAssessmentRows and the core no longer narrates it.
   // Present-but-wrong is still rejected, which is what the next two cases cover.
   it("accepts an absent planAssessmentRows, since the aiOnPlan leaf writes it", () => {
     const r = baseValid();
@@ -172,7 +172,7 @@ describe("validateFindingResponse", () => {
     expect(() => validateFindingResponse(r)).not.toThrow();
   });
 
-  // W67 — this used to REJECT, costing a full Opus regeneration (a real run spent one of its six
+  // This used to REJECT, costing a full Opus regeneration (a real run spent one of its six
   // attempts here). It now merges: the duplicate is what crashed the PDF cover, and merging removes
   // it just as surely as rejecting did, without the $5. The union is what makes that safe — no marker
   // may be dropped, which is the assertion that would fail if the repair ever became lossy.
@@ -191,10 +191,10 @@ describe("validateFindingResponse", () => {
     expect(merged.markers.some((m) => m.name === "Hematocrit")).toBe(true);
   });
 
-  // The other half of the same W67 change: a near-match on a decision band is a transcription slip and
+  // The other half of the same change: a near-match on a decision band is a transcription slip and
   // is repaired to the canonical label; an unrelated name is still a hard reject, because that is the
   // case where questions would be filed under the wrong decision.
-  // W67 — assembleFinding silently .filter()ed an items-empty group out, so the model's mistake
+  // assembleFinding used to silently .filter() an items-empty group out, so the model's mistake
   // vanished rather than being corrected. Checked inside validate() so the correction loop can fix it.
   it("rejects a dataRequisition group with no items", () => {
     const r = baseValid();
@@ -391,7 +391,6 @@ describe("validateFindingResponse", () => {
     expect(() => validateFindingResponse(r)).toThrow(/decisions.ai has more than 12/);
   });
 
-  // W21 — treatmentGroups partition.
   it("rejects a treatmentGroups entry with no topic", () => {
     const r = baseValid();
     r.treatmentGroups[0].topic = "";
@@ -422,49 +421,49 @@ describe("validateFindingResponse", () => {
     expect(() => validateFindingResponse(r)).toThrow(/has neither patient nor ai items/);
   });
 
-  it("rejects a studyResults entry with no group (W25)", () => {
+  it("rejects a studyResults entry with no group", () => {
     const r = baseValid();
     (r.studyResults[0] as { group: string }).group = "";
     expect(() => validateFindingResponse(r)).toThrow(/studyResults\[0\].*group missing/);
   });
 
-  it("rejects a studyResults group that is not one of the disease groups (W25)", () => {
+  it("rejects a studyResults group that is not one of the disease groups", () => {
     const r = baseValid();
     r.studyResults[0].group = "Renal";
     expect(() => validateFindingResponse(r)).toThrow(/studyResults\[0\].*is not one of the disease groups/);
   });
 
-  it("rejects a treatment entry with no group (W25)", () => {
+  it("rejects a treatment entry with no group", () => {
     const r = baseValid();
     (r.treatment[0] as { group: string }).group = "";
     expect(() => validateFindingResponse(r)).toThrow(/treatment\[0\].*group missing/);
   });
 
-  it("rejects a treatment group that is not one of the disease groups (W25)", () => {
+  it("rejects a treatment group that is not one of the disease groups", () => {
     const r = baseValid();
     r.treatment[0].group = "Renal";
     expect(() => validateFindingResponse(r)).toThrow(/treatment\[0\].*is not one of the disease groups/);
   });
 
-  it("rejects a dataRequisition entry with no group (W27)", () => {
+  it("rejects a dataRequisition entry with no group", () => {
     const r = baseValid();
     (r.dataRequisition[0] as { group: string }).group = "";
     expect(() => validateFindingResponse(r)).toThrow(/dataRequisition\[0\].*group missing/);
   });
 
-  it("rejects a dataRequisition group that is not one of the disease groups (W27)", () => {
+  it("rejects a dataRequisition group that is not one of the disease groups", () => {
     const r = baseValid();
     r.dataRequisition[0].group = "Nephrology";
     expect(() => validateFindingResponse(r)).toThrow(/dataRequisition\[0\].*is not one of the disease groups/);
   });
 
-  it("rejects a definitions entry with no group (M96 Phase 9)", () => {
+  it("rejects a definitions entry with no group", () => {
     const r = baseValid();
     (r.definitions[0] as { group: string }).group = "";
     expect(() => validateFindingResponse(r)).toThrow(/definitions\[0\].*group missing/);
   });
 
-  it("rejects a definitions group that is not one of the disease groups (M96 Phase 9)", () => {
+  it("rejects a definitions group that is not one of the disease groups", () => {
     const r = baseValid();
     r.definitions[0].group = "Renal";
     expect(() => validateFindingResponse(r)).toThrow(/definitions\[0\].*is not one of the disease groups/);
@@ -515,7 +514,7 @@ describe("validateFindingResponse", () => {
 // The prompt presents a Patient Plan action as its (quoted) text; the validator matches refs against
 // that text VERBATIM. These tests pin that contract: a clean action ref passes; the "date: action"
 // slip that broke a real regen is rejected — which is what lets the retry-feedback loop fix it
-// instead of silently shipping mismatched data. (Would have caught the W24 date-prefix bug for free.)
+// instead of silently shipping mismatched data. (Would have caught a real past date-prefix bug for free.)
 describe("prompt↔validator verbatim-ref contract", () => {
   const PLAN_ACTION = "Continue Tirzepatide 6mg/week";
   const inputs = { patient: ["TRT", PLAN_ACTION], planActions: [PLAN_ACTION] };
@@ -569,7 +568,7 @@ describe("noteResults pairs to notes by position, so the count is the contract",
   });
 });
 
-// W64 — validate() has always accepted `basis` in either shape (an array of {key,text}, or the
+// validate() has always accepted `basis` in either shape (an array of {key,text}, or the
 // object the vault stores), but assembleFinding only ever iterated the array. A model emitting the
 // object form therefore passed validation and then threw on a non-iterable during assembly. The
 // declared type named only the array, which is why nothing caught it; widening it to the union the
@@ -597,7 +596,7 @@ describe("basis accepts both shapes end to end", () => {
   });
 });
 
-// W65 — the retry loop discarded its reason into the correction text and told the caller nothing,
+// The retry loop used to discard its reason into the correction text and told the caller nothing,
 // so three full generations looked like one long hang. This pins the reporting, not the retrying.
 describe("generateFindingResponse reports why each attempt was rejected", () => {
   it("calls onAttemptFailed with the attempt number and the validation message", async () => {
@@ -621,7 +620,7 @@ describe("generateFindingResponse reports why each attempt was rejected", () => 
     expect(seen.map(([a]) => a)).toEqual(seen.map((_, i) => i + 1));
   });
 
-  // W67 — the whack-a-mole fix. A real run burned all six attempts: 4 failed on a duplicate marker
+  // The whack-a-mole fix. A real run burned all six attempts: 4 failed on a duplicate marker
   // group, 5 on a bad dataRequisition group, 6 on a doctorConversation label. Each correction said
   // "fix exactly this problem", so the model fixed the named one and broke another, never once seeing
   // the accumulated list. Every prior rejection now goes back in.

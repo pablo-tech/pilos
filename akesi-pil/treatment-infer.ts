@@ -1,4 +1,4 @@
-// M54/4 — treatment add-flow intake: read what the user actually has about a product — photos of a
+// Treatment add-flow intake: read what the user actually has about a product — photos of a
 // bottle/package/label, or the product sheet as pasted text — and propose a record. Pure of
 // Node/process/env, mirroring report-extract.ts's shape. The Anthropic client is INJECTED and the
 // model is a required arg (no default), so this module never touches process.env or the config.
