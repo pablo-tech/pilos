@@ -1,9 +1,10 @@
-// Cross-study deltas (W2). The single source of truth for "what changed" — shared
+// Cross-study deltas. The single source of truth for "what changed" — shared
 // by a host's chart/print surfaces and by the Finding prompt builder here, so the change
 // shown on screen and the change the model reasons over can never disagree.
 //
-// Grouping is by stored marker name, which is canonical post-W1c (imaging-catalog),
-// so a metric is one series. `fromComparison` rows (W1b) are real datapoints here; a
+// Grouping is by stored marker name, which is canonical once imaging-catalog markers are
+// stored the same way as lab markers, so a metric is one series. `fromComparison` rows are
+// real datapoints here; a
 // directly-measured reading at the same marker|date already won at ingest.
 
 import type { Client, MarkerResult } from "./types";
