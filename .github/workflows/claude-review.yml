@@ -35,7 +35,9 @@ jobs:
             `/code-review` run at high effort. Read the diff with `gh pr diff`.
 
             - If there are no blocking issues: wait for CI with
-              `gh pr checks --watch`. If checks pass, approve with
+              `gh pr checks --watch --required` (only the required checks —
+              this job itself is not one of them, so watching all checks
+              would wait on itself forever). If checks pass, approve with
               `gh pr review --approve -b "<one-line summary of what you
               checked>"`, then run `gh pr merge --auto --squash --delete-branch`.
               If checks are red, comment that CI is failing and stop — do not
