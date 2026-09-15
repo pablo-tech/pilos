@@ -118,3 +118,30 @@ export function dagFromFiles(files: Record<string, string>): Dag {
   }
   return defineDag(nodes);
 }
+
+function frontmatterFor(node: DagNode): string {
+  const lines = [`node: ${node.key}`, `kind: ${node.kind}`];
+  if (node.label !== node.key) lines.push(`label: ${node.label}`);
+  if (node.inputs.length > 0) lines.push(`inputs: [${node.inputs.join(", ")}]`);
+  if (node.basis) lines.push(`basis: "${node.basis}"`);
+  if (node.note) lines.push("note: true");
+  if (node.noteSink) lines.push("noteSink: true");
+  return lines.join("\n");
+}
+
+// The inverse of dagFromFiles: one path -> markdown text per node, its frontmatter round-tripping
+// through parseVaultNode exactly (a field is omitted only where dagFromFiles already treats absence
+// as that field's default — label falling back to the key, "" for basis, [] for inputs, false for
+// the two booleans). Path is always `${node.key}.md`; a caller that wants a different layout (or a
+// bare `.neuro-pil.yml` manifest) writes its own path.
+//
+// A host with domain-specific content to add per node (a host, like Obsidian, that renders bodies)
+// appends it to the returned text — this module still only knows the graph, never that content
+// (the module comment above: not a general YAML parser, and not a content-authoring tool either).
+export function dagToFiles(dag: Dag): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const node of dag.nodes) {
+    out[`${node.key}.md`] = `---\n${frontmatterFor(node)}\n---\n\n# ${node.label}\n`;
+  }
+  return out;
+}
