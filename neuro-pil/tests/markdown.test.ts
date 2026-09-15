@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractFrontmatter, parseFrontmatterBlock, parseVaultNode, dagFromFiles } from "../markdown";
+import { extractFrontmatter, parseFrontmatterBlock, parseVaultNode, dagFromFiles, dagToFiles } from "../markdown";
 
 describe("extractFrontmatter", () => {
   it("returns the block between --- delimiters", () => {
@@ -93,5 +93,31 @@ describe("dagFromFiles", () => {
     expect(dag.nodes.map((n) => n.key).sort()).toEqual(["forecast/WEEKEND", "station/COASTAL", "station/INLAND"]);
     expect(dag.upstreamOf("forecast/WEEKEND")).toEqual(new Set(["station/INLAND", "station/COASTAL"]));
     expect(dag.sourceClosureOf("forecast/WEEKEND")).toEqual(["station/COASTAL", "station/INLAND"]);
+  });
+});
+
+describe("dagToFiles", () => {
+  it("writes one path per node, keyed the same way dagFromFiles expects", () => {
+    const dag = dagFromFiles({
+      "station/COASTAL.md": "---\nnode: station/COASTAL\nkind: source\nlabel: Coastal buoy\n---\nprose",
+      "forecast/WEEKEND.md": '---\nnode: forecast/WEEKEND\nkind: derived\ninputs: [station/COASTAL]\nbasis: "Weekend forecast"\nnote: true\n---\nprose',
+    });
+    const files = dagToFiles(dag);
+    expect(Object.keys(files).sort()).toEqual(["forecast/WEEKEND.md", "station/COASTAL.md"]);
+    expect(files["station/COASTAL.md"]).toBe("---\nnode: station/COASTAL\nkind: source\nlabel: Coastal buoy\n---\n\n# Coastal buoy\n");
+    expect(files["forecast/WEEKEND.md"]).toBe(
+      '---\nnode: forecast/WEEKEND\nkind: derived\ninputs: [station/COASTAL]\nbasis: "Weekend forecast"\nnote: true\n---\n\n# forecast/WEEKEND\n',
+    );
+  });
+
+  it("round-trips through dagFromFiles back to an equivalent Dag", () => {
+    const original = dagFromFiles({
+      "station/COASTAL.md": "---\nnode: station/COASTAL\nkind: source\n---\nprose",
+      "station/INLAND.md": "---\nnode: station/INLAND\nkind: source\nlabel: Inland station\n---\nprose",
+      "forecast/WEEKEND.md":
+        '---\nnode: forecast/WEEKEND\nkind: derived\ninputs: [station/INLAND, station/COASTAL]\nbasis: "Weekend forecast"\nnoteSink: true\n---\nprose',
+    });
+    const roundTripped = dagFromFiles(dagToFiles(original));
+    expect(roundTripped.nodes).toEqual(original.nodes);
   });
 });
