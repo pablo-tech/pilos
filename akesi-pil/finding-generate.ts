@@ -8,7 +8,7 @@
 import { ageYears } from "./ranges";
 import { CURRENT_DOSE_RULE, BUCKET_DOSE_RULE, STANDARD_DOSING_RULE, asPromptLines } from "./treatment-timing-rules";
 import { pinnedQueryBlock } from "./pinned-queries";
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "./model-client";
 import type { Client, ClientFactors, MarkerResult, NoteEntry, PersonalizedRange } from "./types";
 import { deltaForSeries, type DeltaChange } from "./marker-deltas";
 import { validate, extractJson, type FindingAIResponse } from "./finding-assemble";
@@ -1360,7 +1360,7 @@ export function findingRequestParams(model: string): {
 }
 
 export async function generateFindingResponse(
-  anthropic: Anthropic,
+  anthropic: MessagesClient,
   client: Client,
   model: string,
   usage?: UsageRecorder,

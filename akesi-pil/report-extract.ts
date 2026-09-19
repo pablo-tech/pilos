@@ -3,7 +3,7 @@
 // INJECTED (a CLI passes its env-keyed singleton; a function passes one built
 // from its own env var), and the model is a required arg (no default), so
 // this module never touches process.env or any host-side inference config.
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "./model-client";
 import { ageYears } from "./ranges";
 import type { Client } from "./types";
 import { CANONICAL_IMAGING_MARKERS } from "./imaging-catalog";
@@ -264,7 +264,7 @@ export function systemPromptFor(client: ReportPatient, today: string): string {
 }
 
 export async function proposeFromReport(
-  anthropic: Anthropic,
+  anthropic: MessagesClient,
   source: ReportSource,
   sourceFile: string,
   client: ReportPatient,

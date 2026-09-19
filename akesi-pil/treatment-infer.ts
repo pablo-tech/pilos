@@ -6,7 +6,7 @@
 // ONE function serves both inputs on purpose. The extraction task is the same task whichever way
 // the label arrives, and the rule that must not drift between them — label amounts are product
 // facts, never the patient's dose — is stated once here rather than twice.
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "./model-client";
 import { cleanIngredients, cleanLinks } from "./treatment-product";
 import type { Administration, DoseFrequency, Ingredient, ProductLink } from "./types";
 
@@ -144,7 +144,7 @@ export interface TreatmentInferInput {
 }
 
 export async function inferTreatment(
-  anthropic: Anthropic,
+  anthropic: MessagesClient,
   input: TreatmentInferInput,
   model: string,
   maxTokens: number,
