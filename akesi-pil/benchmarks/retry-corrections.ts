@@ -24,7 +24,7 @@
 // imports the other and a host is what joins them.
 //
 //   npx tsx benchmarks/retry-corrections.ts --preview   # the prompt, both suffixes, the call budget
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "../model-client";
 import { fileURLToPath } from "node:url";
 import { systemPromptFor, rangesUserMessage, RANGE_SCHEMA, validate, type RangeAIResponse } from "../ranges-prompt";
 import { correctionSuffix } from "../finding-generate";
@@ -123,7 +123,7 @@ export interface RetryOutcome {
  *  and on rejection append the validator's message and go again. The only thing the strategy
  *  changes is which of those messages the next attempt gets to see. */
 export async function runCase(
-  anthropic: Anthropic,
+  anthropic: MessagesClient,
   model: string,
   c: RetryCase,
   strategy: Strategy,
