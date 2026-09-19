@@ -7,7 +7,7 @@
 // field that IS returned is `isMedicalReport` — the owner's decision that Reports must reject a
 // non-report while Chat and Notes accept anything. Getting it from the same call the transcription
 // comes from means the gate costs nothing extra.
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "./model-client";
 import { readDocumentAsJson, type DocumentSource, type UsageRecorder } from "./document-model";
 
 // A transcription is bounded by the document, not by the model's inclination to keep writing; 16k
@@ -144,7 +144,7 @@ export function validateReading(sourceFile: string, r: DocumentReading): void {
 }
 
 export async function readDocument(
-  anthropic: Anthropic,
+  anthropic: MessagesClient,
   source: DocumentSource,
   sourceFile: string,
   model: string,

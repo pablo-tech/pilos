@@ -6,7 +6,7 @@
 //
 // The thrown message PREFIXES are load-bearing, not cosmetic: a caller separates "the model
 // produced something unusable" from a transport error by matching on them. They are API.
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "./model-client";
 
 // The document to read: already-extracted plaintext (a Node caller, via pdfjs; or a .txt/.md
 // attachment read straight through) OR the raw PDF bytes as base64, which go to Claude as a native
@@ -34,7 +34,7 @@ export interface UsageRecorder {
 }
 
 export interface DocumentModelCall {
-  anthropic: Anthropic;
+  anthropic: MessagesClient;
   source: DocumentSource;
   /** Only ever used to name the file in the prompt and in error messages. */
   sourceFile: string;

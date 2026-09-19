@@ -37,6 +37,7 @@
     "./factors-edit": "./factors-edit.ts",
     "./report-extract": "./report-extract.ts",
     "./report-merge": "./report-merge.ts",
+    "./model-client": "./model-client.ts",
     "./document-model": "./document-model.ts",
     "./document-read": "./document-read.ts",
     "./ingest-core": "./ingest-core.ts",
