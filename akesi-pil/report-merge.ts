@@ -297,31 +297,30 @@ export interface SourceEditPatch {
   date: string;
 }
 
-// Patch ONE source and its linked DiseaseEntry rows (by position, in sourceId order) in
-// one mutation, keyed by sourceId — the patch counterpart to removeSource's drop. `diseasePatches`
-// must line up 1:1 with diseasesForSource(sourceId)'s current order; a short/mismatched array is
-// ignored past its own length (no add/remove of diagnoses here). Raw values in — normalizeClientDraft
-// (factors-edit.ts) is still the caller's job for trimming/capFirst/date normalization.
+// Patch ONE source and its linked DiseaseEntry rows in one mutation, keyed by sourceId — the patch
+// counterpart to removeSource's drop. Each disease patch names its row by `id`, so the caller may
+// list them in any display order; a patch whose id isn't one of this source's diagnoses is ignored
+// (no add/remove of diagnoses here). Raw values in — normalizeClientDraft (factors-edit.ts) is
+// still the caller's job for trimming/capFirst/date normalization.
 export function updateSource(
   client: Client,
   sourceId: string,
   patch: SourceEditPatch,
-  diseasePatches: { diagnostic: string; date: string; summary?: string; icdCodes?: string[] }[],
+  diseasePatches: { id: string; diagnostic: string; date: string; summary?: string; icdCodes?: string[] }[],
 ): void {
   const rec = client.sources?.find((s) => s.id === sourceId);
   if (rec) {
     if (patch.studyType !== undefined) rec.studyType = patch.studyType;
     rec[patch.dateKey] = patch.date;
   }
-  const diseases = (client.factors?.diseases ?? []).filter((d) => d.sourceId === sourceId);
-  diseases.forEach((d, i) => {
-    const p = diseasePatches[i];
-    if (!p) return;
+  for (const p of diseasePatches) {
+    const d = client.factors?.diseases?.find((x) => x.id === p.id && x.sourceId === sourceId);
+    if (!d) continue;
     d.diagnostic = p.diagnostic;
     d.date = p.date;
     d.summary = p.summary;
     d.icdCodes = p.icdCodes;
-  });
+  }
 }
 
 export interface ProvenanceIssue {
