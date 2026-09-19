@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { applyReportContribution, applySourceReadings, pruneOrphanImagingMarkers, diseaseKey } from "@pablotech/akesi/report-merge";
+import { applyReportContribution, applySourceReadings, pruneOrphanImagingMarkers, diseaseKey, updateSource } from "@pablotech/akesi/report-merge";
 import type { Client, MarkerResult, SourceRecord } from "@pablotech/akesi/types";
 
 function base(): Client {
@@ -231,5 +231,25 @@ describe("pruneOrphanImagingMarkers", () => {
     const pruned = pruneOrphanImagingMarkers(c);
     expect(pruned).toBe(2);
     expect(c.results.map((r) => r.marker + "|" + r.date)).toEqual(["EF|2023-01-01", "Glucose|2021-01-01"]);
+  });
+});
+
+describe("updateSource", () => {
+  // A host lists a report's diagnoses pinned-first; patching by position wrote each edit onto
+  // whichever row happened to sit at that index in vault order.
+  it("patches each diagnosis by id, whatever order the patches arrive in", () => {
+    const c = base();
+    c.sources = [{ id: "s1" } as SourceRecord];
+    c.factors!.diseases = [
+      { id: "a", date: "2024-01-31", diagnostic: "A", sourceId: "s1" },
+      { id: "b", date: "2024-01-31", diagnostic: "B", sourceId: "s1", pinned: true },
+      { id: "x", date: "2024-01-31", diagnostic: "X", sourceId: "s2" },
+    ];
+    updateSource(c, "s1", { dateKey: "studyDate", date: "2024-01-31" }, [
+      { id: "b", diagnostic: "B edited", date: "2024-01-31" },
+      { id: "a", diagnostic: "A edited", date: "2024-01-31" },
+      { id: "x", diagnostic: "not this source", date: "2024-01-31" },
+    ]);
+    expect(c.factors!.diseases!.map((d) => d.diagnostic)).toEqual(["A edited", "B edited", "X"]);
   });
 });
