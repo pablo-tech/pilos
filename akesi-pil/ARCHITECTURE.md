@@ -246,6 +246,16 @@ one place with two live callers whose transports genuinely differ — the Node S
 key — so the seam is drawn at the narrowest thing both can satisfy. Elsewhere a single injected client
 is sufficient, and inventing an interface per call site would be abstraction bought with no buyer.
 
+**Whether a given model can actually hold the contract is measurable, not assumed.**
+[`benchmarks/model-portability.ts`](benchmarks/model-portability.ts) scores **feature × model** using
+this package's own `validate()` functions as the oracle — the same rejections a host would see in
+production, bucketed by reason, with the attempts-to-valid convention of
+[`benchmarks/retry-corrections.ts`](benchmarks/retry-corrections.ts) and its Wilson intervals. It
+issues no calls of its own: the host supplies the client, the model id and — for every probe but
+`ranges` — the cases, because fixtures live in `tests/` and `tests/` is not published. A transport
+failure and a refused input bucket ahead of every quality reason, so a model that cannot be reached
+is never read as a model that answers badly.
+
 ## 7. Safety invariants
 
 Each of these is enforced in code. The failure-mode column is why the enforcement is not merely a

@@ -9,6 +9,10 @@ records *why* something shipped, which a commit log can't reconstruct on its own
 - **`akesi-pil`**: `DocumentSource` gains a `{ pageImages }` form, so a document can be read by a
   vision model that accepts images but not a PDF file part — which is most OpenAI-compatible
   endpoints. The package still renders nothing; the caller supplies the rendered pages.
+- **`akesi-pil`**: `benchmarks/model-portability.ts`, a general feature × model harness scored by
+  this package's own validators, so "which model can run this" is answered by measurement rather
+  than by assertion. Additive and host-driven: it makes no calls and ships no case set beyond the
+  twelve `ranges` cases it shares with `benchmarks/retry-corrections.ts`.
 
 ## [0.1.0] - 2026-08-29
 
