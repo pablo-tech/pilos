@@ -33,6 +33,21 @@ describe("readDocumentAsJson", () => {
     expect(content[1].type).toBe("text");
   });
 
+  it("sends rendered pages as labelled image blocks, in order, with the instruction last", async () => {
+    const { client, create } = anthropicStub(ok({ a: 1 }));
+    await readDocumentAsJson({
+      ...base,
+      anthropic: client,
+      source: { pageImages: [{ base64: "AAAA", mediaType: "image/jpeg" }, { base64: "BBBB", mediaType: "image/jpeg" }] },
+    });
+    const content = create.mock.calls[0][0].messages[0].content;
+    expect(content.map((b: { type: string }) => b.type)).toEqual(["text", "image", "text", "image", "text"]);
+    expect(content[0].text).toBe("Page 1 of 2:");
+    expect(content[1].source).toEqual({ type: "base64", media_type: "image/jpeg", data: "AAAA" });
+    expect(content[3].source.data).toBe("BBBB");
+    expect(content[4].text).toContain("Do it.");
+  });
+
   it("sends already-extracted text as a plain string, with no document block", async () => {
     const { client, create } = anthropicStub(ok({ a: 1 }));
     await readDocumentAsJson({ ...base, anthropic: client, source: { text: "hello" } });

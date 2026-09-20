@@ -214,6 +214,12 @@ Three call sites issue a request, in two shapes:
 | `treatment-infer.ts:168` | `messages.create` with `output_config` | Schema-constrained, single-shot |
 | `finding-generate.ts:1381` | `messages.stream({...}).finalMessage()`, system block cached the same way | A finding runs for minutes; streaming keeps the connection alive and lets a host show progress |
 
+**A document arrives in one of three forms** (`DocumentSource`, `document-model.ts:14`): already-extracted
+text, the raw PDF as base64 for a native `document` block, or the pages already rendered to images. The
+third exists because most OpenAI-compatible endpoints accept images but refuse a PDF file part — a vision
+model can still read the document, and pages-as-images sends it what a human sees rather than a scrape of
+the text layer. The package never renders: the caller owns pdfjs (an edge runtime has none).
+
 The client always arrives from the caller — positionally for `inferTreatment` and
 `generateFindingResponse`, as the `anthropic` field of the call object for `readDocumentAsJson`. There
 is no construction, no key read, no base URL, no retry policy of the package's own.

@@ -148,7 +148,7 @@ export interface ProposedReport {
 // Both moved to document-model.ts when the transport was generalized (a second reader,
 // document-read.ts, needs the identical source union and usage hook). Re-exported under their
 // original names so every existing importer of this module is unaffected.
-export type { UsageRecorder, DocumentSource } from "./document-model";
+export type { UsageRecorder, DocumentSource, PageImage } from "./document-model";
 export type ReportSource = DocumentSource;
 
 function describeFactors(client: ReportPatient): string {
