@@ -9,9 +9,18 @@
 import type { MessagesClient } from "./model-client";
 
 // The document to read: already-extracted plaintext (a Node caller, via pdfjs; or a .txt/.md
-// attachment read straight through) OR the raw PDF bytes as base64, which go to Claude as a native
-// `document` block — an edge runtime has no pdfjs.
-export type DocumentSource = { text: string } | { pdfBase64: string };
+// attachment read straight through), the raw PDF bytes as base64, which go to Claude as a native
+// `document` block, OR the pages rendered to images. The third form exists because most
+// OpenAI-compatible endpoints accept images but refuse a PDF file part: a vision model can still
+// read the document, and rendering sends it what a human sees rather than a scrape of the text
+// layer. The renderer is the caller's (an edge runtime has no pdfjs).
+export type DocumentSource = { text: string } | { pdfBase64: string } | { pageImages: PageImage[] };
+
+export interface PageImage {
+  base64: string;
+  /** image/jpeg or image/png — whatever the caller's renderer produced. */
+  mediaType: string;
+}
 
 // Structural — a caller's own usage accumulator satisfies this, so no cost-accounting module is
 // dragged in. Lives here rather than in report-extract.ts so both readers can record usage without
@@ -57,16 +66,28 @@ export async function readDocumentAsJson<T>(call: DocumentModelCall): Promise<T>
 
   // Document block first, text last — the ordering Anthropic recommends for document/image inputs,
   // and the one leaf-regen-anthropic.ts mirrors for images.
+  const trailing = { type: "text" as const, text: `Document file: ${sourceFile}\n\n${instruction}` };
   const content =
     "text" in source
       ? `Document file: ${sourceFile}\n\n--- BEGIN DOCUMENT ---\n${source.text}\n--- END DOCUMENT ---\n\n${instruction}`
-      : [
-          {
-            type: "document" as const,
-            source: { type: "base64" as const, media_type: "application/pdf" as const, data: source.pdfBase64 },
-          },
-          { type: "text" as const, text: `Document file: ${sourceFile}\n\n${instruction}` },
-        ];
+      : "pageImages" in source
+        ? [
+            ...source.pageImages.map((page, i) => [
+              { type: "text" as const, text: `Page ${i + 1} of ${source.pageImages.length}:` },
+              {
+                type: "image" as const,
+                source: { type: "base64" as const, media_type: page.mediaType as "image/jpeg", data: page.base64 },
+              },
+            ]).flat(),
+            trailing,
+          ]
+        : [
+            {
+              type: "document" as const,
+              source: { type: "base64" as const, media_type: "application/pdf" as const, data: source.pdfBase64 },
+            },
+            trailing,
+          ];
 
   const response = await anthropic.messages.create({
     model,

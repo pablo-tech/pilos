@@ -4,6 +4,12 @@ All notable changes to this repo's packages are documented here, by hand, one en
 not generated from commit history. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for why: a release entry
 records *why* something shipped, which a commit log can't reconstruct on its own.
 
+## [Unreleased]
+
+- **`akesi-pil`**: `DocumentSource` gains a `{ pageImages }` form, so a document can be read by a
+  vision model that accepts images but not a PDF file part — which is most OpenAI-compatible
+  endpoints. The package still renders nothing; the caller supplies the rendered pages.
+
 ## [0.1.0] - 2026-08-29
 
 Initial public release.
