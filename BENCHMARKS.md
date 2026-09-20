@@ -273,4 +273,8 @@ no call — the package constructs no client and reads no key, here as everywher
   result would have to say so.
 - **Everything else `akesi-pil` builds.** Prompt surfaces are golden-fixtured — asserted
   byte-for-byte, so a change is reviewable — which is version control, not evidence about output
-  quality.
+  quality. Partly resolved downstream: `benchmarks/model-portability` scores a feature against a
+  model using this package's own validators as the oracle, and the consuming app publishes the
+  dated numbers in its `MEASUREMENT.md`
+  ([tinytars/lexi](https://github.com/tinytars/lexi/blob/main/apps/lexitar/MEASUREMENT.md)). The
+  harness lives here; the numbers live there and are not copied across repos.
