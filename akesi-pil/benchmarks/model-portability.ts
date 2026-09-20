@@ -88,6 +88,10 @@ const BUCKETS: [string, RegExp][] = [
   // Not quality at all. Kept first and reported separately, because a model that cannot be reached
   // or is refused the input scores zero and would otherwise read as a model that answers badly.
   ["unreachable", /fetch failed|ECONNREFUSED|ETIMEDOUT|socket hang up|network|502|503|504/i],
+  // The provider answered, and its answer was about the account rather than the request: no credit,
+  // no key, wrong key, over the rate limit. Found by a real run whose balance had run out, which
+  // scored a frontier model 0/12 and filed the reason under "other".
+  ["refused", /credit balance|billing|quota|rate.?limit|authentication|invalid x-api-key|permission|\b401\b|\b402\b|\b403\b|\b429\b/i],
   ["unsupported", /cannot take|does not support|model_unsupported|unsupported/i],
   ["not a report", /is not a medical report/],
   ["wrong unit", /returned unit "[^"]*" but lab data is in/],

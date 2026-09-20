@@ -253,8 +253,9 @@ production, bucketed by reason, with the attempts-to-valid convention of
 [`benchmarks/retry-corrections.ts`](benchmarks/retry-corrections.ts) and its Wilson intervals. It
 issues no calls of its own: the host supplies the client, the model id and — for every probe but
 `ranges` — the cases, because fixtures live in `tests/` and `tests/` is not published. A transport
-failure and a refused input bucket ahead of every quality reason, so a model that cannot be reached
-is never read as a model that answers badly.
+failure, a refused input and a refusal about the *account* — no credit, no key, over the rate limit —
+bucket ahead of every quality reason, so a model that was never actually asked is never read as a
+model that answers badly.
 
 ## 7. Safety invariants
 

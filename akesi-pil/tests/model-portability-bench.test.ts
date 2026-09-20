@@ -126,6 +126,8 @@ describe("bucketRejection", () => {
   it.each([
     ["fetch failed", "unreachable"],
     ["this model cannot take PDF documents", "unsupported"],
+    ['400 {"type":"error","error":{"message":"Your credit balance is too low to access the Anthropic API."}}', "refused"],
+    ["429 rate limit exceeded", "refused"],
     ['report "x.pdf" is not a medical report: it is a receipt', "not a report"],
     ['range for "Total Protein" returned unit "g/dL" but lab data is in "g/L"', "wrong unit"],
     ['range for "Total Protein" (unit g/L) missing imperial explanation', "missing imperial"],
@@ -139,6 +141,12 @@ describe("bucketRejection", () => {
 
   it("does not read a transport failure as a quality failure", () => {
     expect(bucketRejection("fetch failed: ECONNREFUSED 127.0.0.1:11434")).toBe("unreachable");
+  });
+
+  // The message a real baseline run came back with. Before this bucket existed it read as "other",
+  // which on a published table is indistinguishable from the model answering badly.
+  it("does not read an account problem as a quality failure", () => {
+    expect(bucketRejection('400 {"error":{"message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing."}}')).toBe("refused");
   });
 });
 

@@ -13,6 +13,10 @@ records *why* something shipped, which a commit log can't reconstruct on its own
   this package's own validators, so "which model can run this" is answered by measurement rather
   than by assertion. Additive and host-driven: it makes no calls and ships no case set beyond the
   twelve `ranges` cases it shares with `benchmarks/retry-corrections.ts`.
+- **`akesi-pil`**: `bucketRejection` gains a `refused` bucket for a provider answering about the
+  account rather than the request — no credit, no key, over the rate limit. A real baseline run came
+  back with "your credit balance is too low" and the harness scored it as twelve quality failures;
+  on a published table that is indistinguishable from a model answering badly.
 
 ## [0.1.0] - 2026-08-29
 
