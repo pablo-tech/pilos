@@ -49,12 +49,14 @@
     "./finding-regroup": "./finding-regroup.ts",
     "./pinned-queries": "./pinned-queries.ts",
     "./section-labels": "./section-labels.ts",
-    "./benchmarks/retry-corrections": "./benchmarks/retry-corrections.ts"
+    "./benchmarks/retry-corrections": "./benchmarks/retry-corrections.ts",
+    "./benchmarks/model-portability": "./benchmarks/model-portability.ts"
   },
   "scripts": {
     "test": "vitest run",
     "prompt:golden": "tsx tests/gen-prompt-golden.ts",
-    "bench:retry": "tsx benchmarks/retry-corrections.ts --preview"
+    "bench:retry": "tsx benchmarks/retry-corrections.ts --preview",
+    "bench:portability": "tsx benchmarks/model-portability.ts --preview"
   },
   "peerDependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
