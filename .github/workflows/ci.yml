@@ -27,7 +27,7 @@ jobs:
     # The rules it enforces are in .github/autopilot.json. Which pull requests it applies to is an
     # input, not a job-level `if:`: a required check that reports SKIPPED blocks the merge forever.
     if: github.event_name == 'pull_request'
-    uses: promontory-studio/autopilot/.github/workflows/guard.yml@a5fe74d4f3b2116304a21c1babf57114fe15bcbc
+    uses: promontory-studio/autopilot/.github/workflows/guard.yml@2c52091f36c1e2da50624954f826f31c31b0b536
     with:
       base-ref: ${{ github.base_ref }}
       head-sha: ${{ github.event.pull_request.head.sha }}
