@@ -36,27 +36,13 @@ construct no client and read no key either. The case set, the strategies and the
 tested offline against scripted responses; a host supplies the SDK instance and the comparison loop.
 
 Add a measured number to [`BENCHMARKS.md`](BENCHMARKS.md) and nowhere else, with the date, `n`, and
-the model it came from. A result that came back flat or negative goes in unchanged — a ledger that
-only records wins is not evidence of anything.
+the model it came from.
 
-Four rules apply to anything added there, and they are what the page is worth:
-
-- **A row measures the claim it is filed under, in that claim's own units.** A number that is easy
-  to compute is not a substitute for the one the sentence actually makes. If the claim is about
-  output changing, the row has to compute outputs.
-- **A row must be able to come out differently for an implementation that is correct but
-  different** — and name what that implementation would score. This is stricter than mutation
-  testing: breaking the code and watching a number move proves the row *reads* the code, not that it
-  *discriminates*. A row with no such answer is a tautology, and a tautology that reports 100% is
-  worse than no row at all.
-- **Pre-register a sampled run before paying for it.** The `n`, the regime and the minimum
-  detectable effect go in first; then the result is reported against them. Deciding what would have
-  counted as an effect *after* seeing the numbers is how a benchmark becomes decoration.
-- **Publish the interpretation next to the number.** A rate with no stated meaning gets read as
-  whichever meaning flatters the author, and the same figure carries opposite meanings in adjacent
-  rows: reporting nothing is correct behaviour when a slice normalized the edit away and a silent
-  failure when the slice is missing. Say what the number is measured against and what it costs the
-  reader — one sentence, in the domain's nouns, separate from the measurement itself.
+**The discipline a published row has to survive lives in
+[dokimasia's `METHOD.md`](https://github.com/promontory-studio/dokimasia/blob/main/METHOD.md)** —
+what a row must measure, why a sampled run is pre-registered before it is paid for, and why a flat
+or negative result is published unchanged. It is not restated here: a rule kept in two places
+drifts, and then one of the copies is a lie with no signal which.
 
 ## Golden-fixture regeneration
 
