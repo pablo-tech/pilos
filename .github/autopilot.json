@@ -1,0 +1,9 @@
+{
+  "agentAuthor": "plover-autopilot[bot]",
+  "botAuthor": "dependabot[bot]",
+  "maxLines": 400,
+  "apps": [
+    { "path": "neuro-pil", "run": ["npx", "vitest", "run"], "tests": ["tests/**"], "unitTests": ["tests/**"] },
+    { "path": "akesi-pil", "run": ["npx", "vitest", "run"], "tests": ["tests/**"], "unitTests": ["tests/**"] }
+  ]
+}

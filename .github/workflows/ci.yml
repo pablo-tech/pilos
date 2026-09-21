@@ -14,14 +14,27 @@ jobs:
       matrix:
         package: [neuro-pil, akesi-pil]
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
       - run: npm install
         working-directory: ${{ matrix.package }}
       - run: npm test
         working-directory: ${{ matrix.package }}
+
+  autopilot-guard:
+    # The rules it enforces are in .github/autopilot.json. Which pull requests it applies to is an
+    # input, not a job-level `if:`: a required check that reports SKIPPED blocks the merge forever.
+    if: github.event_name == 'pull_request'
+    uses: promontory-studio/autopilot/.github/workflows/guard.yml@a5fe74d4f3b2116304a21c1babf57114fe15bcbc
+    with:
+      base-ref: ${{ github.base_ref }}
+      head-sha: ${{ github.event.pull_request.head.sha }}
+      authors: plover-autopilot[bot],dependabot[bot]
+      pr-author: ${{ github.event.pull_request.user.login }}
+      # There is no root manifest here, so the host's default `npm ci` has nothing to install.
+      install: npm install --prefix neuro-pil && npm install --prefix akesi-pil
 
   release:
     needs: test
@@ -34,20 +47,28 @@ jobs:
       group: release-main
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           token: ${{ secrets.RELEASE_PAT }}
           persist-credentials: true
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
-      - name: Bump patch version in both packages
+      - name: Bump both packages past any version whose tag already exists
         id: bump
         run: |
-          (cd neuro-pil && npm version patch --no-git-tag-version)
-          (cd akesi-pil && npm version patch --no-git-tag-version)
-          echo "version=$(node -p "require('./neuro-pil/package.json').version")" >> "$GITHUB_OUTPUT"
+          IFS='.' read -r major minor patch <<< "$(node -p "require('./neuro-pil/package.json').version")"
+          # A tag left behind by a release that failed after tagging would make `git tag` below fail
+          # on every run after it, wedging releases permanently. Skip past it instead.
+          patch=$((patch + 1))
+          while git rev-parse -q --verify "refs/tags/v$major.$minor.$patch" >/dev/null; do
+            patch=$((patch + 1))
+          done
+          new_version="$major.$minor.$patch"
+          (cd neuro-pil && npm version "$new_version" --no-git-tag-version)
+          (cd akesi-pil && npm version "$new_version" --no-git-tag-version)
+          echo "version=$new_version" >> "$GITHUB_OUTPUT"
       - name: Commit, tag, push
         run: |
           git config user.name "github-actions[bot]"
