@@ -39,7 +39,7 @@ Add a measured number to [`BENCHMARKS.md`](BENCHMARKS.md) and nowhere else, with
 the model it came from.
 
 **The discipline a published row has to survive lives in
-[dokimasia's `METHOD.md`](https://github.com/promontory-studio/dokimasia/blob/main/METHOD.md)** —
+[dokimasia's `METHOD.md`](https://github.com/promontory-studio/dokimasia-rk/blob/main/METHOD.md)** —
 what a row must measure, why a sampled run is pre-registered before it is paid for, and why a flat
 or negative result is published unchanged. It is not restated here: a rule kept in two places
 drifts, and then one of the copies is a lie with no signal which.
