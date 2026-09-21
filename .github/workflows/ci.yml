@@ -28,11 +28,11 @@ jobs:
     # The rules it enforces are in .github/autopilot.json. Which pull requests it applies to is an
     # input, not a job-level `if:`: a required check that reports SKIPPED blocks the merge forever.
     if: github.event_name == 'pull_request'
-    uses: promontory-studio/autopilot/.github/workflows/guard.yml@2c52091f36c1e2da50624954f826f31c31b0b536
+    uses: promontory-studio/pedalion/.github/workflows/guard.yml@2c52091f36c1e2da50624954f826f31c31b0b536
     with:
       base-ref: ${{ github.base_ref }}
       head-sha: ${{ github.event.pull_request.head.sha }}
-      authors: plover-autopilot[bot],dependabot[bot]
+      authors: plover-autopilot[bot],pedalion[bot],dependabot[bot]
       pr-author: ${{ github.event.pull_request.user.login }}
       # There is no root manifest here, so the host's default `npm ci` has nothing to install.
       install: npm install --prefix neuro-pil && npm install --prefix akesi-pil
