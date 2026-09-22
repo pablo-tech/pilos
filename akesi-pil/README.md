@@ -390,12 +390,18 @@ bundle, a Cloudflare Pages Function or a Node CLI alike — with **one** excepti
 (`parsers-report.ts`) pulls in `pdfjs-dist`. It is the only Node-only entry point, and it is named
 that way so importing it is a deliberate act rather than something a bundler discovers for you.
 
-The package has **no runtime dependencies**. Its three external couplings — `@anthropic-ai/sdk`,
-`pdfjs-dist` and `@promontory-studio/dokimasia` — are declared as *optional* peer dependencies, so
-installing `akesi-pil` pulls in none of them. Bring the SDK if you call one of the three
-model-issuing functions, `pdfjs-dist` if you import `./pdf-node`, and the harness only if you import
-a `./benchmarks/*` subpath; importing `unit-systems` or `treatment-bucket` should not cost you a PDF
-parser, an HTTP client and a benchmark harness, and it doesn't.
+The package has **no runtime dependencies**, and only two *optional* peers — `pdfjs-dist` and
+`@promontory-studio/dokimasia` — so installing `akesi-pil` pulls in neither. Bring `pdfjs-dist` if
+you import `./pdf-node`, and the harness only if you import a `./benchmarks/*` subpath; importing
+`unit-systems` or `treatment-bucket` should not cost you a PDF parser and a benchmark harness, and it
+doesn't.
+
+**No vendor SDK is a peer at all.** The three model-issuing functions take a client the caller
+already holds, and the shape they require is *declared* in
+[`model-client.ts`](model-client.ts) rather than derived from a vendor's types — so nothing here
+names `@anthropic-ai/sdk`, at runtime or at compile time. A real SDK instance satisfies the port as-is,
+which is asserted rather than hoped: see `tests/client-port.test-d.ts` and
+[`ARCHITECTURE.md` § *The model seam*](ARCHITECTURE.md#6-the-model-seam).
 
 ## Tests
 
@@ -403,6 +409,12 @@ parser, an HTTP client and a benchmark harness, and it doesn't.
 asserts eighteen golden prompt fixtures byte-for-byte, so any change to prompt construction shows up
 as a fixture diff rather than a silent pass. Regenerate them with `npm run prompt:golden` and review
 the diff before committing.
+
+`npm run check` (`tsc --noEmit`) runs beside it. It is not a build — this package publishes raw
+TypeScript — it is there because `npm test` never invokes the compiler, and
+`tests/client-port.test-d.ts` asserts what only a compiler can: that a real `@anthropic-ai/sdk`
+client still satisfies the port [`model-client.ts`](model-client.ts) declares by hand, and that a
+client which does not is rejected.
 
 `benchmarks/` is the one directory `npm test` does not run, because a benchmark issues real model
 calls. Everything in it except the calls is still covered offline against scripted responses — the

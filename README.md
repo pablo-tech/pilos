@@ -99,8 +99,9 @@ And because the prompt *is* the derivation, prompts are version-controlled like 
   them, so a version is promoted on evidence rather than on a hunch — [one real run, and why it
   settled nothing](BENCHMARKS.md#sampled--akesi-pil).
 
-The package does issue the model call, but it never *owns* it: the client is a parameter, the SDK
-import is type-only, and nothing here constructs a client or reads a key. So the tests need no
+The package does issue the model call, but it never *owns* it: the client is a parameter, the shape
+that parameter has to satisfy is declared in `akesi-pil/model-client.ts` rather than imported from a
+vendor, and nothing here constructs a client or reads a key. So the tests need no
 network, and the provider-shaped surface is small enough to name — three call sites, documented in
 [`akesi-pil/ARCHITECTURE.md`](akesi-pil/ARCHITECTURE.md) § *The model seam* rather than hidden behind
 an abstraction that would claim more independence than there is.
