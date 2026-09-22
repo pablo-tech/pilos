@@ -23,6 +23,11 @@ jobs:
         working-directory: ${{ matrix.package }}
       - run: npm test
         working-directory: ${{ matrix.package }}
+      # vitest transpiles without type-checking, so nothing in this repo ran the compiler until
+      # akesi-pil gained a `check` script. `--if-present` keeps neuro-pil, which has no tsconfig, a
+      # no-op rather than a failure.
+      - run: npm run check --if-present
+        working-directory: ${{ matrix.package }}
 
   autopilot-guard:
     # The rules it enforces are in .github/autopilot.json. Which pull requests it applies to is an

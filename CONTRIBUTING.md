@@ -7,13 +7,20 @@ network access:
 
 ```
 cd neuro-pil && npm install && npm test
-cd akesi-pil && npm install && npm test
+cd akesi-pil && npm install && npm test && npm run check
 ```
+
+`npm run check` is `tsc --noEmit` and exists in `akesi-pil` only. It is not a build — the packages
+publish raw TypeScript — it is there because `npm test` alone never runs the compiler, and
+`akesi-pil/tests/client-port.test-d.ts` asserts things that only a compiler can check: that a real
+vendor SDK client still satisfies the port declared in `akesi-pil/model-client.ts`. CI runs it beside
+the suite.
 
 **The test suites need no network and no credentials.** `neuro-pil` never contacts anything at all.
 `akesi-pil` does issue model calls, in three places — but it constructs no client and reads no key:
-the client arrives as a parameter, and the SDK import is type-only, so nothing is reachable from a
-test that doesn't pass one in (see its
+the client arrives as a parameter, and no source file names a vendor SDK at all — the client shape is
+declared in [`akesi-pil/model-client.ts`](akesi-pil/model-client.ts), so there is nothing a test
+could reach without passing a client in (see its
 [`ARCHITECTURE.md`](akesi-pil/ARCHITECTURE.md) §1 *This package's role: derive, don't decide* and §6
 *The model seam*). If a test needs network access or a secret to pass, that's a bug in the test, not
 a missing setup step.

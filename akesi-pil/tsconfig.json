@@ -1,0 +1,24 @@
+{
+  // Not a build config: this package publishes raw TypeScript, and `npm run check` is the only thing
+  // that reads this file. It exists so the compiler is actually run over the sources in CI — vitest
+  // transpiles without checking, so before this the type-level assertions in
+  // tests/client-port.test-d.ts could not have failed, and a test that cannot fail is not one.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // Required to consume @promontory-studio/dokimasia, which publishes raw .ts and imports its own
+    // modules by their .ts specifier — its README names this option as the cost of no build step.
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  // Every source, both test trees and the benchmarks. `pdfjs-dist` and @anthropic-ai/sdk are
+  // devDependencies purely so this list can be complete: parsers-report.ts imports the first and
+  // tests/client-port.test-d.ts the second, and a check that skipped either would be checking less
+  // than the package ships.
+  "include": ["*.ts", "tests/**/*.ts", "benchmarks/**/*.ts"]
+}

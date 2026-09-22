@@ -6,6 +6,33 @@ records *why* something shipped, which a commit log can't reconstruct on its own
 
 ## [Unreleased]
 
+- **`akesi-pil`**: the `MessagesClient` port is declared outright instead of derived from
+  `@anthropic-ai/sdk`, and the SDK is no longer a peer dependency of any kind. It was an *optional*
+  peer, which fixed what a consumer installs and left the build untouched: every port type was still
+  a vendor type, so type-checking this package required the vendor's package to be present. This
+  supersedes the peer half of the `@anthropic-ai/sdk` entry below — the devDependency stays, now for
+  one file. `model-client.ts` declares the shape itself and adds `ModelReply`, `ModelRequest`,
+  `ModelUsage`, `ReplyBlock`, `TextReplyBlock`, `OtherReplyBlock` and `StreamEvent` beside the
+  existing `MessagesClient` and `MessagesStream`.
+
+  **A real SDK instance is still accepted**, which is the compatibility the change turns on, and it
+  is proven rather than asserted: `tests/client-port.test-d.ts` assigns one to `MessagesClient`,
+  assigns an adapter that is not the SDK to the same type, and pins with `@ts-expect-error` that a
+  client which is not this port is rejected. `npm run check` therefore goes red if the port and the
+  real SDK ever drift apart. What does break is a host that named an SDK type *through* this package
+  — a function annotated `(m: Anthropic.Message)` fed from a call core: the reply type is now
+  `ModelReply`, which declares `content`, `stop_reason` and `usage` and not `id`, `role` or `model`.
+
+  **`akesi-pil` now type-checks in CI**, which it never did: `npm run check` (`tsc --noEmit`, a new
+  `tsconfig.json`) runs beside `npm test`, because vitest transpiles without checking and the
+  assertions above are ones only a compiler can make — before this they could not have failed.
+  `typescript`, `@types/node` and `pdfjs-dist` join the devDependencies so the check can cover every
+  source the package ships, `parsers-report.ts` included. Nothing a consumer installs changes.
+
+  The `@promontory-studio/dokimasia` peer and dev ranges move to `^0.3.0`, which is the release that
+  did the same thing to the harness's own copy of the port. The two declarations stay mutually
+  assignable and neither package imports the other's: they are independent statements of one
+  external contract — the Messages request and reply shape — which neither owns.
 - **`akesi-pil`**: the benchmark harness moved out and is consumed back as a package.
   `benchmarks/model-portability.ts` and `benchmarks/retry-corrections.ts` had between them a probe
   loop, a censoring rule, a bucket table, a scorer and five statistics functions that are about

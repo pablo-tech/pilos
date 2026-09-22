@@ -201,10 +201,14 @@ no view on whether it may be logged, displayed, or dropped.
 
 ## 6. The model seam
 
-Five modules `import type Anthropic from "@anthropic-ai/sdk"` — `document-model`, `document-read`,
-`report-extract`, `treatment-infer`, `finding-generate`. Every one is a **type-only** import: it
-vanishes at compile time, and no consumer needs the SDK at runtime unless it calls one of the three
-functions below. The SDK is an optional peer dependency for exactly that reason.
+Five modules take a client — `document-model`, `document-read`, `report-extract`,
+`treatment-infer`, `finding-generate` — and every one of them gets its type from
+[`model-client.ts`](model-client.ts), not from a vendor: `import type { MessagesClient } from
+"./model-client"`. **That port is declared here rather than derived from an SDK's types**, so nothing
+a consumer installs, imports or type-checks names a vendor, and `@anthropic-ai/sdk` is a peer of
+nothing. What keeps the declaration honest is `tests/client-port.test-d.ts`, which assigns a real
+`Anthropic` instance to `MessagesClient` and fails `npm run check` the day the two drift apart — the
+SDK is a devDependency of that one test.
 
 Three call sites issue a request, in two shapes:
 

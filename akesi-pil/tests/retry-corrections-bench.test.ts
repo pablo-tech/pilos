@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "../model-client";
 import type { RangeAIResponse } from "../ranges-prompt";
 import { CASES, CENSORED, MAX_ATTEMPTS, VERSIONS, runCase, score } from "../benchmarks/retry-corrections";
 
@@ -33,7 +33,7 @@ const NO_IMPERIAL: RangeAIResponse = { ...VALID, explanationImperial: null } as 
 
 /** A scripted model. Returns the given responses in order and records every user message it saw,
  *  which is what lets the accumulation itself be asserted rather than assumed. */
-function scriptedClient(responses: RangeAIResponse[]): { client: Anthropic; seen: string[] } {
+function scriptedClient(responses: RangeAIResponse[]): { client: MessagesClient; seen: string[] } {
   const seen: string[] = [];
   let i = 0;
   const client = {
@@ -43,7 +43,8 @@ function scriptedClient(responses: RangeAIResponse[]): { client: Anthropic; seen
         return { content: [{ type: "text", text: JSON.stringify(responses[Math.min(i++, responses.length - 1)]) }] };
       },
     },
-  } as unknown as Anthropic;
+  // Cast to the PORT, never to a vendor type: this fake returns only the one field runCase reads.
+  } as unknown as MessagesClient;
   return { client, seen };
 }
 
