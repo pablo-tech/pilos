@@ -60,10 +60,14 @@
   },
   "peerDependencies": {
     "@anthropic-ai/sdk": "^0.88.0",
+    "@promontory-studio/dokimasia": "^0.2.5",
     "pdfjs-dist": "^6.2.108"
   },
   "peerDependenciesMeta": {
     "@anthropic-ai/sdk": {
+      "optional": true
+    },
+    "@promontory-studio/dokimasia": {
       "optional": true
     },
     "pdfjs-dist": {
@@ -71,6 +75,7 @@
     }
   },
   "devDependencies": {
+    "@promontory-studio/dokimasia": "^0.2.5",
     "tsx": "^4.22.3",
     "vitest": "^5.0.0"
   }

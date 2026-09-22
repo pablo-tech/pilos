@@ -1,25 +1,22 @@
 import { describe, it, expect } from "vitest";
 import type Anthropic from "@anthropic-ai/sdk";
 import type { RangeAIResponse } from "../ranges-prompt";
+import { budget } from "@promontory-studio/dokimasia/budget";
+import { censored, runProbe, runProbeCase, type AnyProbe } from "@promontory-studio/dokimasia/probe";
 import { CASES } from "../benchmarks/retry-corrections";
 import {
-  budget,
   bucketRejection,
-  censored,
   documentProbe,
   extractProbe,
   rangesProbe,
-  runProbe,
-  runProbeCase,
   summarize,
   treatmentProbe,
-  type Probe,
 } from "../benchmarks/model-portability";
 
-// The measurement is tested before it is billed. Everything here is the shipped path — the prompt
-// builders, the retry loop and the validators that judge each attempt — with only the model
-// scripted, so the arithmetic a published table rests on (pass rate, attempts, buckets) is proven
-// against outcomes whose right answer is known.
+// The measurement is tested before it is billed. The probe loop and the arithmetic are
+// @promontory-studio/dokimasia's and are tested there; what is asserted here is the half that could
+// not move — this package's probes driven through the shipped path, with only the model scripted, so
+// that a published table's numbers rest on outcomes whose right answer is known.
 
 /** A model that returns the given bodies in order, repeating the last. Serves both the create and
  *  the stream shapes, because finding streams and everything else does not. */
@@ -103,8 +100,8 @@ describe("summarize", () => {
     expect(s.firstAttemptPassRate).toBeCloseTo(1 / 3);
     // 1 + 2 + 4 (censored) over three cases.
     expect(s.meanAttempts).toBeCloseTo(7 / 3);
-    expect(s.ci[0]).toBeLessThan(s.passRate);
-    expect(s.ci[1]).toBeGreaterThan(s.passRate);
+    expect(s.ci[0]).toBeLessThan(s.passRate!);
+    expect(s.ci[1]).toBeGreaterThan(s.passRate!);
   });
 
   it("buckets the rejections, commonest first, with a real example attached", async () => {
@@ -115,10 +112,13 @@ describe("summarize", () => {
     expect(s.rejections[0].example).toMatch(/g\/dL/);
   });
 
-  it("scores an empty run as censored rather than as a clean sweep", () => {
+  it("reports a feature no call was made for as unmeasured, not as a zero", () => {
+    // A zero here would be averaged into a stack score as if it were a measurement. The harness
+    // reserves zero for a feature that WAS asked and failed.
     const s = summarize([], probe);
-    expect(s.passRate).toBe(0);
-    expect(s.meanAttempts).toBe(4);
+    expect(s.passRate).toBeNull();
+    expect(s.meanAttempts).toBeNull();
+    expect(s.ci).toEqual([0, 1]);
   });
 });
 
@@ -176,7 +176,7 @@ describe("the document probes", () => {
 
 describe("budget", () => {
   it("states the ceiling a pre-registration has to commit to, before a call is made", () => {
-    const probes = [rangesProbe(), treatmentProbe("treatmentText", [{ label: "a", input: { text: "creatine 5g" } }])] as unknown as Probe<never>[];
+    const probes: AnyProbe[] = [rangesProbe(), treatmentProbe("treatmentText", [{ label: "a", input: { text: "creatine 5g" } }])];
     expect(budget(probes)).toEqual([
       { feature: "ranges", cases: 12, maxCallsPerModel: 36 },
       { feature: "treatmentText", cases: 1, maxCallsPerModel: 1 },

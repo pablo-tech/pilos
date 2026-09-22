@@ -6,9 +6,12 @@
 // here is never a rubric and never a second model: it is this package's own validate() — the same
 // function that decides in production whether a response is usable at all.
 //
-// General on purpose. A probe is one feature's shipped call plus the cases to run it on, so
-// measuring a NEW candidate model is a config edit in the host and measuring a NEW feature is one
-// more Probe. Nothing in here names a vendor, a model or an endpoint.
+// The probe loop, the censoring convention, the rejection bucketing and the scoring are NOT in this
+// file. They are @promontory-studio/dokimasia, a domain-free harness extracted from the version that
+// used to live here. What stays is everything that knows what a lab result is: the probes, their
+// cases, and the rejection vocabulary this package's own validators throw. A probe cannot move into
+// the harness for the same reason the harness could leave this package — the oracle is validate(),
+// and validate() is ours.
 //
 // Cases come from the HOST, not from this file, for every probe but ranges: the fixtures a report or
 // a document probe needs are documents, and ../../ARCHITECTURE.md is explicit that a host is what
@@ -20,139 +23,41 @@
 //
 //   npx tsx benchmarks/model-portability.ts --preview   # the call budget, with no call made
 import { fileURLToPath } from "node:url";
-import type { MessagesClient } from "../model-client";
+import { budget } from "@promontory-studio/dokimasia/budget";
+import { bucketRejection as bucketAgainst, withDefaults, type BucketTable } from "@promontory-studio/dokimasia/buckets";
+import type { AnyProbe, Probe, ProbeOutcome } from "@promontory-studio/dokimasia/probe";
+import { summarize as summarizeAgainst, type FeatureScore } from "@promontory-studio/dokimasia/score";
 import type { Client } from "../types";
-import { CASES, MAX_ATTEMPTS, VERSIONS, runCase, wilson, type RetryCase } from "./retry-corrections";
+import { CASES, MAX_ATTEMPTS, VERSIONS, runCase, type RetryCase } from "./retry-corrections";
 import { generateFindingResponse } from "../finding-generate";
 import { proposeFromReport, type ReportPatient, type ReportSource } from "../report-extract";
 import { readDocument } from "../document-read";
 import { inferTreatment, type TreatmentInferInput } from "../treatment-infer";
 
-/** Called once per rejection the shipped path RETRIED PAST. The final rejection of a failed run is
- *  the thrown error instead, so a reason is never counted twice. */
-export type OnRejected = (reason: string) => void;
+// ---- this package's rejection vocabulary --------------------------------------------------------
 
-export interface Probe<C> {
-  /** The feature name the host's inference config routes — "ranges", "extract", … */
-  feature: string;
-  cases: C[];
-  label(c: C): string;
-  /** How many attempts the SHIPPED path makes. 1 for a feature with no correction channel. */
-  attempts: number;
-  /** One run of the shipped path. Resolves when this package's own validator accepted the result. */
-  run(anthropic: MessagesClient, model: string, c: C, onRejected: OnRejected): Promise<unknown>;
-}
-
-export interface ProbeOutcome {
-  feature: string;
-  model: string;
-  label: string;
-  ok: boolean;
-  /** 1..probe.attempts when it validated; probe.attempts + 1 when it never did. */
-  attempts: number;
-  /** Every rejection in order — the validator's own words, which is what makes a flat result usable. */
-  rejections: string[];
-  ms: number;
-}
-
-/** The score for a case that never validated: one worse than the ceiling, so "failed" orders after
- *  "succeeded on the last attempt" without pretending to know how many more it would have needed. */
-export function censored(probe: { attempts: number }): number {
-  return probe.attempts + 1;
-}
-
-export async function runProbeCase<C>(anthropic: MessagesClient, model: string, probe: Probe<C>, c: C): Promise<ProbeOutcome> {
-  const rejections: string[] = [];
-  const started = Date.now();
-  const base = { feature: probe.feature, model, label: probe.label(c) };
-  try {
-    await probe.run(anthropic, model, c, (r) => rejections.push(r));
-    return { ...base, ok: true, attempts: rejections.length + 1, rejections, ms: Date.now() - started };
-  } catch (e) {
-    rejections.push((e as Error)?.message ?? String(e));
-    return { ...base, ok: false, attempts: censored(probe), rejections, ms: Date.now() - started };
-  }
-}
-
-/** Cases run in order, never concurrently: a self-hosted server answers one request at a time
- *  anyway, and overlapping calls would make the per-case latency meaningless. */
-export async function runProbe<C>(anthropic: MessagesClient, model: string, probe: Probe<C>): Promise<ProbeOutcome[]> {
-  const out: ProbeOutcome[] = [];
-  for (const c of probe.cases) out.push(await runProbeCase(anthropic, model, probe, c));
-  return out;
-}
-
-// Buckets keyed on the messages this package actually throws, so a bucket is a thing that happened
-// rather than a category invented afterwards. Order matters: the first match wins.
-const BUCKETS: [string, RegExp][] = [
-  // Not quality at all. Kept first and reported separately, because a model that cannot be reached
-  // or is refused the input scores zero and would otherwise read as a model that answers badly.
-  ["unreachable", /fetch failed|ECONNREFUSED|ETIMEDOUT|socket hang up|network|502|503|504/i],
-  // The provider answered, and its answer was about the account rather than the request: no credit,
-  // no key, wrong key, over the rate limit. Found by a real run whose balance had run out, which
-  // scored a frontier model 0/12 and filed the reason under "other".
-  ["refused", /credit balance|billing|quota|rate.?limit|authentication|invalid x-api-key|permission|\b401\b|\b402\b|\b403\b|\b429\b/i],
-  ["unsupported", /cannot take|does not support|model_unsupported|unsupported/i],
+// Keyed on the messages this package actually throws, so a bucket is a thing that happened rather
+// than a category invented afterwards. Order matters and the first match wins — which is why the
+// table goes through withDefaults rather than being written out: that prepends the harness's
+// operational and response-shape buckets, so no edit here can put a quality reason ahead of
+// "unreachable" and make a model that was never actually asked read as a model that answers badly.
+export const BUCKETS: BucketTable = withDefaults([
   ["not a report", /is not a medical report/],
   ["wrong unit", /returned unit "[^"]*" but lab data is in/],
   ["missing imperial", /missing imperial explanation/],
-  ["invalid JSON", /invalid JSON|not valid JSON/],
-  ["no text block", /no text block/],
-  ["truncated", /truncated \(hit max_tokens\)/],
   ["duplicate", /duplicate/i],
   ["unknown reference", /not (in|among)|unknown |never mentioned/i],
   ["missing field", /missing |must be |requires |empty/i],
-];
+]);
 
 export function bucketRejection(message: string): string {
-  return BUCKETS.find(([, re]) => re.test(message))?.[0] ?? "other";
+  return bucketAgainst(message, BUCKETS);
 }
 
-export interface FeatureScore {
-  feature: string;
-  model: string;
-  n: number;
-  passed: number;
-  passRate: number;
-  /** Wilson interval on passRate — the right interval at the small n a paid run can afford. */
-  ci: [number, number];
-  /** Validated on the very first attempt, with no correction. The number that says whether the
-   *  prompt lands on this model, as opposed to whether the retry loop can rescue it. */
-  firstAttemptPassRate: number;
-  /** Over every case, censored failures included — reported next to passRate, never instead of it. */
-  meanAttempts: number;
-  medianMs: number;
-  /** Most common first, with one real example, because a flat result is only actionable if you can
-   *  see WHAT the model got wrong. */
-  rejections: { bucket: string; count: number; example: string }[];
-}
-
+/** The harness's summarize with this package's buckets already bound, so a host scoring akesi's
+ *  probes cannot accidentally report them against another domain's rejection vocabulary. */
 export function summarize(outcomes: ProbeOutcome[], probe: { feature: string; attempts: number }): FeatureScore {
-  const n = outcomes.length;
-  const passed = outcomes.filter((o) => o.ok).length;
-  const first = outcomes.filter((o) => o.ok && o.attempts === 1).length;
-  const ms = outcomes.map((o) => o.ms).sort((a, b) => a - b);
-  const byBucket = new Map<string, { count: number; example: string }>();
-  for (const o of outcomes) {
-    for (const r of o.rejections) {
-      const bucket = bucketRejection(r);
-      const hit = byBucket.get(bucket);
-      if (hit) hit.count++;
-      else byBucket.set(bucket, { count: 1, example: r.slice(0, 200) });
-    }
-  }
-  return {
-    feature: probe.feature,
-    model: outcomes[0]?.model ?? "",
-    n,
-    passed,
-    passRate: n === 0 ? 0 : passed / n,
-    ci: wilson(passed, n),
-    firstAttemptPassRate: n === 0 ? 0 : first / n,
-    meanAttempts: n === 0 ? censored(probe) : outcomes.reduce((s, o) => s + o.attempts, 0) / n,
-    medianMs: n === 0 ? 0 : ms[Math.floor((n - 1) / 2)],
-    rejections: [...byBucket].map(([bucket, v]) => ({ bucket, ...v })).sort((a, b) => b.count - a.count),
-  };
+  return summarizeAgainst(outcomes, probe, BUCKETS);
 }
 
 // ---- the probes -------------------------------------------------------------------------------
@@ -253,22 +158,8 @@ export function treatmentProbe(feature: string, cases: TreatmentCase[]): Probe<T
   };
 }
 
-// ---- budgeting --------------------------------------------------------------------------------
-
-export interface Budget {
-  feature: string;
-  cases: number;
-  maxCallsPerModel: number;
-}
-
-/** What a run would cost in calls, before any is made — the number --preview exists to print, and
- *  the one a pre-registration has to state. */
-export function budget(probes: Probe<never>[], models = 1): Budget[] {
-  return probes.map((p) => ({ feature: p.feature, cases: p.cases.length, maxCallsPerModel: p.cases.length * p.attempts * models }));
-}
-
 function main(): void {
-  const probes = [rangesProbe()] as unknown as Probe<never>[];
+  const probes: AnyProbe[] = [rangesProbe()];
   const lines = budget(probes).map((b) => `  ${b.feature.padEnd(16)} ${String(b.cases).padStart(3)} cases  ≤ ${b.maxCallsPerModel} calls per model`);
   process.stdout.write(
     "model-portability: feature × model, scored by this package's own validate().\n" +

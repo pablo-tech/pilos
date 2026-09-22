@@ -358,11 +358,17 @@ versions against a fixed case set once you have more than one.
   `marker-deltas.ts`, `pinned-queries.ts`, `factors-edit.ts`: building the actual LLM prompt for one
   reasoning unit ("finding") from its source data, and assembling/regrouping the model's structured
   response.
-- **Benchmarks** — `benchmarks/retry-corrections.ts`: a synthetic case set, two correction
-  strategies and the retry loop that runs them, scored by this package's own shipped `validate()`
-  rather than by a rubric written to be passed. Not exported from the package root, and never part
-  of `npm test` — running it costs real model calls. It constructs no client either: the cases and
-  the scorer are data, and a host supplies both the SDK instance and the comparison loop. See
+- **Benchmarks** — `benchmarks/retry-corrections.ts` and `benchmarks/model-portability.ts`: a
+  synthetic case set, two correction strategies, and one probe per feature, all scored by this
+  package's own shipped `validate()` rather than by a rubric written to be passed. Not exported from
+  the package root, and never part of `npm test` — running them costs real model calls. They
+  construct no client either: the cases and the probes are data, and a host supplies both the SDK
+  instance and the loop. The probe loop, the censoring convention, the rejection bucketing and the
+  statistics are **not** here — they are
+  [`@promontory-studio/dokimasia`](https://github.com/promontory-studio/dokimasia-rk), a domain-free
+  harness extracted from the copies that used to live in these two files. What stays is everything
+  that knows what a lab result is, which is also why a probe cannot move into the harness: the
+  oracle is `validate()`, and `validate()` is this package's. See
   [`BENCHMARKS.md`](../BENCHMARKS.md#sampled--akesi-pil).
 
 ## Importing
@@ -384,11 +390,12 @@ bundle, a Cloudflare Pages Function or a Node CLI alike — with **one** excepti
 (`parsers-report.ts`) pulls in `pdfjs-dist`. It is the only Node-only entry point, and it is named
 that way so importing it is a deliberate act rather than something a bundler discovers for you.
 
-The package has **no runtime dependencies**. Its two external couplings — `@anthropic-ai/sdk` and
-`pdfjs-dist` — are declared as *optional* peer dependencies, so installing `akesi-pil` pulls in
-neither. Bring the SDK if you call one of the three model-issuing functions, and `pdfjs-dist` if you
-import `./pdf-node`; importing `unit-systems` or `treatment-bucket` should not cost you a PDF parser
-and an HTTP client, and it doesn't.
+The package has **no runtime dependencies**. Its three external couplings — `@anthropic-ai/sdk`,
+`pdfjs-dist` and `@promontory-studio/dokimasia` — are declared as *optional* peer dependencies, so
+installing `akesi-pil` pulls in none of them. Bring the SDK if you call one of the three
+model-issuing functions, `pdfjs-dist` if you import `./pdf-node`, and the harness only if you import
+a `./benchmarks/*` subpath; importing `unit-systems` or `treatment-bucket` should not cost you a PDF
+parser, an HTTP client and a benchmark harness, and it doesn't.
 
 ## Tests
 
@@ -399,10 +406,12 @@ the diff before committing.
 
 `benchmarks/` is the one directory `npm test` does not run, because a benchmark issues real model
 calls. Everything in it except the calls is still covered offline against scripted responses — the
-retry loop, both strategies, the scorer and the statistics — because an instrument nobody has tested
-is not a measurement. Those tests assert the accumulation itself, by recording every user message
-the loop sends and requiring the third attempt to carry both earlier rejections under one strategy
-and only the latest under the other; one asserts the module cannot reach a provider on its own.
+retry loop, both strategies, the scorer and every probe — because an instrument nobody has tested is
+not a measurement. Those tests assert the accumulation itself, by recording every user message the
+loop sends and requiring the third attempt to carry both earlier rejections under one strategy and
+only the latest under the other; one asserts the module cannot reach a provider on its own. The
+statistics are not re-asserted here: they belong to `@promontory-studio/dokimasia` and are tested in
+its suite, and two copies of one fact are how the two drift apart.
 
 One test in that file is not about prompts at all:
 

@@ -94,3 +94,11 @@ in `neuro-pil`; the clinical case set, the two correction strategies and the sco
 `akesi-pil/benchmarks/`; and the four-line loop that joins them lives in a host, because neither
 package may import the other. [`BENCHMARKS.md`](BENCHMARKS.md#sampled--akesi-pil) quotes that loop in
 full — it is the shortest complete illustration of this whole document's argument.
+
+The same cut has since been made a second time, outside this repo.
+[`@promontory-studio/dokimasia`](https://github.com/promontory-studio/dokimasia-rk) is the probe
+loop, censoring convention, rejection bucketing and small-n statistics that `akesi-pil/benchmarks/`
+used to carry in duplicate; `akesi-pil` now consumes it as an optional peer dependency and keeps only
+what knows what a lab result is. The test of whether a cut is real is whether anything had to move
+the other way, and nothing did: the oracle is `validate()`, `validate()` is `akesi-pil`'s, and a
+harness that borrowed one would stop being domain-free.

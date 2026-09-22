@@ -1,25 +1,17 @@
 import { describe, it, expect } from "vitest";
 import type Anthropic from "@anthropic-ai/sdk";
 import type { RangeAIResponse } from "../ranges-prompt";
-import {
-  CASES,
-  CENSORED,
-  MAX_ATTEMPTS,
-  VERSIONS,
-  runCase,
-  minimumDetectableWins,
-  score,
-  signTest,
-  successRate,
-  wilson,
-  withReplicates,
-} from "../benchmarks/retry-corrections";
+import { CASES, CENSORED, MAX_ATTEMPTS, VERSIONS, runCase, score } from "../benchmarks/retry-corrections";
 
 // This benchmark's whole claim is that ACCUMULATING rejections differs from replacing them, so the
 // thing worth asserting offline is that the loop really does accumulate — not merely that two
 // strings differ. The model is the only part stubbed here; the retry loop, the prompt builder and
 // the validator that decides each attempt are all the shipped implementations. No network, no key,
 // no client constructed at module scope.
+//
+// The statistics this benchmark reports through — Wilson intervals, the sign test, the detectable
+// effect, replicate expansion — are @promontory-studio/dokimasia's and are asserted in its suite.
+// Re-asserting them here would be two copies of one fact.
 
 const VALID: RangeAIResponse = {
   low: 64,
@@ -131,67 +123,12 @@ describe("the case set", () => {
     const twoCondition = CASES.filter((x) => ["g/L", "cm", "kg"].includes(x.expectedUnit));
     expect(twoCondition.length).toBeGreaterThanOrEqual(4);
   });
-
-  it("expands into replicates with distinct labels and no shared case objects", () => {
-    const expanded = withReplicates(CASES, 3);
-    expect(expanded).toHaveLength(36);
-    expect(new Set(expanded.map((x) => x.label)).size).toBe(36);
-    expect(expanded[0].marker).toBe(CASES[0].marker);
-  });
 });
 
 describe("how a result gets reported", () => {
   it("scores attempts-until-valid, so lower is better and a failure sorts last", () => {
     expect(score({ attempts: 1, ok: true, rejections: [] })).toBe(1);
     expect(score({ attempts: CENSORED, ok: false, rejections: [] })).toBeGreaterThan(MAX_ATTEMPTS);
-  });
-
-  it("reports a success rate separately, because a censored mean hides a failure-rate difference", () => {
-    const outcomes = [
-      { attempts: 1, ok: true, rejections: [] },
-      { attempts: CENSORED, ok: false, rejections: [] },
-    ];
-    expect(successRate(outcomes)).toBe(0.5);
-    expect(successRate([])).toBe(0);
-  });
-
-  it("gives a Wilson interval that is not [1, 1] for a clean sweep at n=12", () => {
-    // The instrument's resolution, made visible. Twelve out of twelve is a real result and its
-    // lower bound is near 0.76 — so it must never be reported as "1.000", which reads as a
-    // certainty the sample size cannot support. The interval is what keeps that honest.
-    const [lo, hi] = wilson(12, 12);
-    expect(hi).toBeCloseTo(1, 10);
-    expect(lo).toBeGreaterThan(0.7);
-    expect(lo).toBeLessThan(0.8);
-  });
-
-  it("widens as n falls and is symmetric about a half", () => {
-    expect(wilson(6, 12)[1] - wilson(6, 12)[0]).toBeLessThan(wilson(3, 6)[1] - wilson(3, 6)[0]);
-    const [lo, hi] = wilson(6, 12);
-    expect(lo + hi).toBeCloseTo(1, 10);
-  });
-});
-
-describe("the pre-registered detectable effect", () => {
-  it("computes the exact two-sided sign test on known splits", () => {
-    expect(signTest(0, 0)).toBe(1);
-    expect(signTest(5, 10)).toBe(1); // an even split is as unremarkable as it gets
-    expect(signTest(10, 10)).toBeCloseTo(2 / 1024, 10);
-    expect(signTest(9, 10)).toBeCloseTo(22 / 1024, 10);
-  });
-
-  it("names the smallest win count that would have reached significance", () => {
-    // 8/10 gives p≈0.109 and 9/10 gives p≈0.021, so ten discordant pairs need nine.
-    expect(minimumDetectableWins(10)).toBe(9);
-    expect(signTest(minimumDetectableWins(10), 10)).toBeLessThan(0.05);
-    expect(signTest(minimumDetectableWins(10) - 1, 10)).toBeGreaterThan(0.05);
-  });
-
-  it("admits when no result at that n could reach significance", () => {
-    // Five discordant pairs cannot: even 5/5 is p=0.0625. Pre-registration is what surfaces that
-    // before the calls are paid for rather than after.
-    expect(minimumDetectableWins(5)).toBe(Infinity);
-    expect(minimumDetectableWins(6)).toBe(6);
   });
 });
 
