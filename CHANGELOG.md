@@ -28,6 +28,10 @@ records *why* something shipped, which a commit log can't reconstruct on its own
   `number | null` and are `null` at `n = 0` — where it used to report `0` and `censored(probe)`. Zero
   is reserved for a feature that was asked and failed; the old zeros were being averaged into stack
   scores as if they were measurements. Narrow with the harness's `measured()` guard.
+- **`akesi-pil`**: `@anthropic-ai/sdk` is now a devDependency as well as an optional peer. Three files
+  here name the type (`model-client.ts` and both benchmark tests) while nothing installed it, so it
+  resolved only when some other dependency happened to pull it in — which is not a dependency, it is
+  a coincidence. Nothing about what a consumer installs changes: the peer stays optional.
 - **`akesi-pil`**: `DocumentSource` gains a `{ pageImages }` form, so a document can be read by a
   vision model that accepts images but not a PDF file part — which is most OpenAI-compatible
   endpoints. The package still renders nothing; the caller supplies the rendered pages.
