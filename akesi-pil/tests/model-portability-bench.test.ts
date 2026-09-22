@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type Anthropic from "@anthropic-ai/sdk";
+import type { MessagesClient } from "../model-client";
 import type { RangeAIResponse } from "../ranges-prompt";
 import { budget } from "@promontory-studio/dokimasia/budget";
 import { censored, runProbe, runProbeCase, type AnyProbe } from "@promontory-studio/dokimasia/probe";
@@ -20,14 +20,16 @@ import {
 
 /** A model that returns the given bodies in order, repeating the last. Serves both the create and
  *  the stream shapes, because finding streams and everything else does not. */
-function scripted(bodies: unknown[]): Anthropic {
+function scripted(bodies: unknown[]): MessagesClient {
   let i = 0;
   const next = () => ({
     content: [{ type: "text", text: typeof bodies[Math.min(i, bodies.length - 1)] === "string" ? (bodies[i++] as string) : JSON.stringify(bodies[Math.min(i++, bodies.length - 1)]) }],
     stop_reason: "end_turn",
     usage: { input_tokens: 1, output_tokens: 1 },
   });
-  return { messages: { create: async () => next(), stream: () => ({ finalMessage: async () => next() }) } } as unknown as Anthropic;
+  // Cast to the PORT, never to a vendor type: the fake's block `type` widens to string and its
+  // stream has no [Symbol.asyncIterator], because nothing here iterates one — only finalMessage().
+  return { messages: { create: async () => next(), stream: () => ({ finalMessage: async () => next() }) } } as unknown as MessagesClient;
 }
 
 const VALID_RANGE: RangeAIResponse = {

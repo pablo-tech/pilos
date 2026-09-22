@@ -26,7 +26,7 @@ export interface PageImage {
 // dragged in. Lives here rather than in report-extract.ts so both readers can record usage without
 // importing the report module.
 export interface UsageRecorder {
-  // Field types mirror the Anthropic SDK's Usage (nullable numbers) so response.usage passes
+  // Field types mirror ModelUsage in model-client.ts (nullable numbers) so response.usage passes
   // straight through.
   record(
     model: string,
