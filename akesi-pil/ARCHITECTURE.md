@@ -257,6 +257,16 @@ failure, a refused input and a refusal about the *account* — no credit, no key
 bucket ahead of every quality reason, so a model that was never actually asked is never read as a
 model that answers badly.
 
+**The measuring half of that is not in this package.** The probe loop, the censoring convention, the
+bucket ordering and the statistics are
+[`@promontory-studio/dokimasia`](https://github.com/promontory-studio/dokimasia-rk), an optional peer
+dependency needed only by a `./benchmarks/*` subpath. The line between them is the oracle: a probe is
+one feature's shipped call judged by `validate()`, so a probe belongs to whoever owns the validator
+and can never move into a domain-free harness — which is exactly why the harness could leave. What
+remains here is the five probe factories and the rejection vocabulary this package's own validators
+throw, passed to the harness through `withDefaults` so no edit to it can order a quality reason ahead
+of `unreachable`.
+
 ## 7. Safety invariants
 
 Each of these is enforced in code. The failure-mode column is why the enforcement is not merely a

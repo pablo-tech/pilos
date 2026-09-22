@@ -6,6 +6,32 @@ records *why* something shipped, which a commit log can't reconstruct on its own
 
 ## [Unreleased]
 
+- **`akesi-pil`**: the benchmark harness moved out and is consumed back as a package.
+  `benchmarks/model-portability.ts` and `benchmarks/retry-corrections.ts` had between them a probe
+  loop, a censoring rule, a bucket table, a scorer and five statistics functions that are about
+  measurement and nothing about lab data; they are now
+  [`@promontory-studio/dokimasia`](https://github.com/promontory-studio/dokimasia-rk), declared here
+  as an *optional* peer dependency needed only by a `./benchmarks/*` subpath. What stayed is what
+  knows what a lab result is: the five probes, the twelve `ranges` cases, the two correction
+  strategies, the retry loop and this package's own rejection vocabulary.
+
+  **Breaking, for a host that imported the harness from here.** `Probe`, `ProbeOutcome`, `OnRejected`,
+  `censored`, `runProbe`, `runProbeCase`, `budget`, `Budget` and `FeatureScore` are no longer exported
+  from `./benchmarks/model-portability`, and `wilson`, `signTest`, `minimumDetectableWins`,
+  `successRate` and `withReplicates` are no longer exported from `./benchmarks/retry-corrections`.
+  Import them from the harness instead; every one is the same function under the same name.
+  `bucketRejection` and `summarize` stay, still bound to this package's buckets, so a host never has
+  to supply the table and never scores akesi's rejections against another domain's vocabulary.
+
+  **One behaviour changed with the move.** `summarize` now reports a feature no call was made for as
+  **unmeasured** — `passRate`, `firstAttemptPassRate`, `meanAttempts` and `medianMs` are
+  `number | null` and are `null` at `n = 0` — where it used to report `0` and `censored(probe)`. Zero
+  is reserved for a feature that was asked and failed; the old zeros were being averaged into stack
+  scores as if they were measurements. Narrow with the harness's `measured()` guard.
+- **`akesi-pil`**: `@anthropic-ai/sdk` is now a devDependency as well as an optional peer. Three files
+  here name the type (`model-client.ts` and both benchmark tests) while nothing installed it, so it
+  resolved only when some other dependency happened to pull it in — which is not a dependency, it is
+  a coincidence. Nothing about what a consumer installs changes: the peer stays optional.
 - **`akesi-pil`**: `DocumentSource` gains a `{ pageImages }` form, so a document can be read by a
   vision model that accepts images but not a PDF file part — which is most OpenAI-compatible
   endpoints. The package still renders nothing; the caller supplies the rendered pages.

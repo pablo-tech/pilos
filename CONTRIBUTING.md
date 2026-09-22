@@ -32,8 +32,13 @@ gated: the check asks whether the page matches the run, never whether the run is
 
 **Sampled** (`akesi-pil/benchmarks/`) issue real model calls, so they are opt-in and never part of
 `npm test`. This is not an exception to *Running a package standalone* above: the benchmark modules
-construct no client and read no key either. The case set, the strategies and the scorer are data,
-tested offline against scripted responses; a host supplies the SDK instance and the comparison loop.
+construct no client and read no key either. The case set, the strategies, the probes and the scorer
+are data, tested offline against scripted responses; a host supplies the SDK instance and the
+comparison loop. The measuring machinery underneath them — the probe loop, the censoring
+convention, the bucket ordering, the Wilson intervals and the sign test — is
+[`@promontory-studio/dokimasia`](https://github.com/promontory-studio/dokimasia-rk), an optional peer
+dependency of `akesi-pil` and the only dependency any benchmark here has. Fix arithmetic there and
+assert it there; a copy of it in this repo is a second version of one fact.
 
 Add a measured number to [`BENCHMARKS.md`](BENCHMARKS.md) and nowhere else, with the date, `n`, and
 the model it came from.

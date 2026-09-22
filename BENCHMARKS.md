@@ -255,7 +255,16 @@ const result = await compareBrains(cases, VERSIONS, (c, v) => runCase(anthropic,
 ```
 
 `npm run bench:retry` in `akesi-pil` prints the user message and both correction suffixes, and makes
-no call — the package constructs no client and reads no key, here as everywhere else.
+no call — the package constructs no client and reads no key, here as everywhere else. `npm run
+bench:portability` does the same for the feature × model budget.
+
+The probe loop, the censoring convention, the rejection bucketing and the statistics behind every
+number on this page's sampled half are
+[`@promontory-studio/dokimasia`](https://github.com/promontory-studio/dokimasia-rk) — extracted from
+`akesi-pil/benchmarks/`, where they were written against this repo's own deployment decision, and
+consumed back as an optional peer dependency. `akesi-pil` keeps the probes, because a probe is judged
+by `validate()` and `validate()` cannot leave the package that ships it. That split is why the
+arithmetic on this page is asserted in the harness's suite rather than twice.
 
 ## Not yet measured
 

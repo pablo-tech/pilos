@@ -24,8 +24,10 @@
 // imports the other and a host is what joins them.
 //
 //   npx tsx benchmarks/retry-corrections.ts --preview   # the prompt, both suffixes, the call budget
-import type { MessagesClient } from "../model-client";
 import { fileURLToPath } from "node:url";
+import { censored } from "@promontory-studio/dokimasia/probe";
+import { withReplicates } from "@promontory-studio/dokimasia/stats";
+import type { MessagesClient } from "../model-client";
 import { systemPromptFor, rangesUserMessage, RANGE_SCHEMA, validate, type RangeAIResponse } from "../ranges-prompt";
 import { correctionSuffix } from "../finding-generate";
 import type { Client } from "../types";
@@ -36,9 +38,9 @@ export const MAX_TOKENS = 1024;
  *  benchmark measures the loop that actually runs rather than an idealized unbounded one. */
 export const MAX_ATTEMPTS = 3;
 
-/** The score for a case that never validated. One worse than the ceiling, so "failed" is ordered
- *  after "succeeded on the last attempt" without pretending to know how many more it would need. */
-export const CENSORED = MAX_ATTEMPTS + 1;
+/** The score for a case that never validated. The convention is the harness's — one worse than the
+ *  ceiling — named here because this loop reports it directly rather than through a Probe. */
+export const CENSORED = censored({ attempts: MAX_ATTEMPTS });
 
 export interface RetryCase {
   label: string;
@@ -104,13 +106,6 @@ export const CASES: RetryCase[] = [
   labCase(12, "Body Weight", "kg", "1955-10-03", "male", [78.4, 77.1, 76.5]),
 ];
 
-/** k independent samples per case, expressed as k copies of the case list. compareBrains scores a
- *  flat array, so replicates need no API change — and variance across identical cases is the only
- *  way to tell a real difference from one sampling run. */
-export function withReplicates(cases: RetryCase[], k: number): RetryCase[] {
-  return Array.from({ length: k }, (_, r) => cases.map((c) => ({ ...c, label: `${c.label} #${r + 1}` }))).flat();
-}
-
 export interface RetryOutcome {
   /** 1..MAX_ATTEMPTS when it validated; CENSORED when it never did. */
   attempts: number;
@@ -166,48 +161,6 @@ export async function runCase(
  *  next to the table rather than leaving to be inferred. */
 export function score(result: RetryOutcome): number {
   return result.attempts;
-}
-
-/** Reported alongside the mean, never instead of it: a mean over censored values hides a difference
- *  that is entirely in the failure rate. */
-export function successRate(outcomes: RetryOutcome[]): number {
-  return outcomes.length === 0 ? 0 : outcomes.filter((o) => o.ok).length / outcomes.length;
-}
-
-/** Wilson score interval — the right interval for a proportion at small n, where the textbook
- *  normal approximation puts the bound above 1 and reports [1.00, 1.00] for a clean sweep. */
-export function wilson(successes: number, n: number, z = 1.96): [number, number] {
-  if (n === 0) return [0, 1];
-  const p = successes / n;
-  const d = 1 + (z * z) / n;
-  const centre = p + (z * z) / (2 * n);
-  const half = z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n));
-  return [Math.max(0, (centre - half) / d), Math.min(1, (centre + half) / d)];
-}
-
-/** Exact two-sided sign test over the discordant pairs — the cases where the two strategies
- *  disagreed. Paired, because both strategies run the same case: the cases differ enormously in
- *  difficulty, and an unpaired comparison spends most of its power on that instead of on the
- *  strategy. Ties carry no information about direction and are excluded, which is the test. */
-export function signTest(wins: number, discordant: number): number {
-  if (discordant === 0) return 1;
-  const tail = Math.min(wins, discordant - wins);
-  let sum = 0;
-  let c = 1;
-  for (let i = 0; i <= tail; i++) {
-    sum += c;
-    c = (c * (discordant - i)) / (i + 1);
-  }
-  return Math.min(1, (2 * sum) / Math.pow(2, discordant));
-}
-
-/** The smallest number of discordant wins that would reach p < 0.05 — the minimum detectable
- *  effect, pre-registered rather than discovered afterwards. Returns Infinity when no split of
- *  `discordant` pairs can reach significance, which is the honest answer at very small n and the
- *  reason to compute it BEFORE spending on a run. */
-export function minimumDetectableWins(discordant: number, alpha = 0.05): number {
-  for (let w = Math.ceil(discordant / 2); w <= discordant; w++) if (signTest(w, discordant) < alpha) return w;
-  return Infinity;
 }
 
 function main(): void {
