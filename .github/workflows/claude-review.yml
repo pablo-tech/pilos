@@ -32,7 +32,7 @@ jobs:
       github.event_name == 'workflow_run' &&
       github.event.workflow_run.event == 'pull_request' &&
       github.event.workflow_run.pull_requests[0] != null
-    uses: promontory-studio/pedalion-ci/.github/workflows/review.yml@2c52091f36c1e2da50624954f826f31c31b0b536
+    uses: promontory-studio/pedalion-ci/.github/workflows/review.yml@6c2d307ada45c3202c2c395b2ac46056c47a40bf # v1.3.0
     # `secrets: inherit` does not cross owners, so every secret is named.
     secrets:
       anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -77,7 +77,7 @@ jobs:
   notify-failure:
     needs: [review, push-audit]
     if: always() && contains(needs.*.result, 'failure')
-    uses: promontory-studio/pedalion-ci/.github/workflows/notify-failure.yml@2c52091f36c1e2da50624954f826f31c31b0b536
+    uses: promontory-studio/pedalion-ci/.github/workflows/notify-failure.yml@6c2d307ada45c3202c2c395b2ac46056c47a40bf # v1.3.0
     # Files in this repo's own tracker, not in the shared inbox: nothing here is
     # user-derived, so there is nothing to keep out of a public issue.
     with:
