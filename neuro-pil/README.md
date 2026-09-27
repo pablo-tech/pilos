@@ -620,3 +620,7 @@ Three consequences of the trade above, and what to do about each:
   byte-identical, and you pay for every one of them. Regenerating everything instead — what you do
   without this library — wastes six times as many
   ([`BENCHMARKS.md`](../BENCHMARKS.md#deterministic--neuro-pil)).
+
+## License
+
+MIT — see [`LICENSE`](./LICENSE).

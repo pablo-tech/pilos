@@ -89,6 +89,22 @@ Keep a PR scoped to one package where possible. Cross-package changes (a `neuro-
 that `akesi-pil` needs to follow) are fine, but call out the dependency in the PR description rather
 than letting reviewers infer it from the diff.
 
+## Inbound contributions: sign off, don't sign a CLA
+
+**Every commit needs a `Signed-off-by` line, and nothing else.** `git commit -s` appends it from your
+`user.name` and `user.email`; `git rebase --signoff main` adds it across a branch you have already
+written. CI checks it, so a pull request without it goes red before review.
+
+That line is the [Developer Certificate of Origin](https://developercertificate.org/) 1.1 — a
+statement that you wrote the change, or otherwise have the right to submit it, and that you are
+contributing it under this repository's licence. It is deliberately not a Contributor Licence
+Agreement and not an assignment: nothing here aggregates copyright, so you keep yours, both packages
+stay MIT ([`akesi-pil/LICENSE`](akesi-pil/LICENSE), [`neuro-pil/LICENSE`](neuro-pil/LICENSE)), and a
+downstream user's rights come from that licence rather than from a private contract. A CLA would need
+a signing service and a counterparty to guarantee what MIT already grants.
+
+Commits authored by this repo's bots are exempt — they certify nothing and hold no copyright.
+
 ## Releases
 
 Merging to `main` auto-bumps the shared patch version (`0.1.43` → `0.1.44`) and tags/releases it —

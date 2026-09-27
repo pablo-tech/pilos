@@ -2,6 +2,9 @@
 
 ## Checklist
 
+- [ ] Every commit carries `Signed-off-by` (`git commit -s`) — the
+      [Developer Certificate of Origin](https://developercertificate.org/), see
+      [CONTRIBUTING.md](../CONTRIBUTING.md#inbound-contributions-sign-off-dont-sign-a-cla).
 - [ ] `cd neuro-pil && npm install && npm test` and/or `cd akesi-pil && npm install && npm test`
       pass locally, for whichever package(s) this PR touches.
 - [ ] If this touches `akesi-pil`'s prompts, updated the golden-file fixtures (see
