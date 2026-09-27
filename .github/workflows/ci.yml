@@ -29,6 +29,48 @@ jobs:
       - run: npm run check --if-present
         working-directory: ${{ matrix.package }}
 
+  dco:
+    # Every commit needs a Signed-off-by trailer — the Developer Certificate of Origin, see
+    # CONTRIBUTING.md. Runs on push as well, where it prints "nothing to check" and exits 0: a
+    # required check that reports SKIPPED on a push blocks the branch forever, per the note below.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Every commit signed off
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT" != pull_request ]; then
+            echo "Not a pull request — nothing to check."
+            exit 0
+          fi
+          fail=0
+          for sha in $(git log --no-merges --format=%H "$BASE_SHA..$HEAD_SHA"); do
+            author=$(git log -1 --format=%an "$sha")
+            # Bots certify nothing and hold no copyright, and a check they can never satisfy only
+            # teaches everyone to bypass it. Matched by name suffix so new bots need no edit here.
+            case "$author" in
+              *'[bot]') echo "skip   $sha  $author"; continue ;;
+            esac
+            if git log -1 --format=%B "$sha" | grep -qiE '^Signed-off-by: .+ <.+@.+>'; then
+              echo "ok     $sha  $author"
+            else
+              echo "MISSING Signed-off-by: $sha  $author  $(git log -1 --format=%s "$sha")"
+              fail=1
+            fi
+          done
+          if [ "$fail" -ne 0 ]; then
+            echo
+            echo "Add it with 'git commit -s', or across a branch already written with"
+            echo "'git rebase --signoff origin/main'. See CONTRIBUTING.md."
+            exit 1
+          fi
+
   autopilot-guard:
     # The rules it enforces are in .github/autopilot.json. Which pull requests it applies to is an
     # input, not a job-level `if:`: a required check that reports SKIPPED blocks the merge forever.
