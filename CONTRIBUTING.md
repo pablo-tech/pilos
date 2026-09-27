@@ -116,3 +116,4 @@ A MINOR or MAJOR bump is still a human call: bump both `package.json`s yourself 
 change earns one (a new capability, a breaking API change). A [`CHANGELOG.md`](CHANGELOG.md) entry
 is the same kind of deliberate, human-written call — not every patch bump gets one, only a release
 worth explaining.
+
