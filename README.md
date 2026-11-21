@@ -16,6 +16,15 @@ changes*.
 > **New here?** [`START-HERE.md`](START-HERE.md) has two short ways in — three minutes with no
 > code, or ten minutes running it.
 
+**Where an answer is, as opposed to what this is, is [`AGENTS.md`](AGENTS.md).** It routes a
+question to the document that answers it — three ranked commands, an alias table mapping the words a
+question uses onto the file holding the answer, and [`HEADINGS.md`](HEADINGS.md) beside it as the
+fallback where the subject itself is unknown. Thirteen documents and about 183,100 B are in scope,
+four of them over 24,000 B, and both packages carry a `README.md` and an `ARCHITECTURE.md` — so the
+same word appears in four documents and means something different in each, which is what the table
+is for. It also declares what a hit may carry: `quote = line`, with no exclusion list and a stated
+reason there is none.
+
 ## What this is for
 
 A derivation you cannot re-run is one you cannot safely own. The question — *is this derived

@@ -1,0 +1,38 @@
+# The retrieval layer's four answers for this repository.
+# The contract is infra/retrieval/CONTRACT.md in promontory-studio/plover-context.
+#
+# `entry` is left at its default, AGENTS.md, which is a new file rather than a section of an
+# existing one. The root README.md is 13,511 B and already over the contract's 12,000 B ceiling
+# before a routing section is added to it, and START-HERE.md is a tutorial whose whole shape is two
+# ordered paths through the repository — the opposite of a table a reader scans. A route is read by
+# whatever is answering a question, which is what the name says, and pablo-tech/principia carries
+# one publicly for the same reason.
+#
+# `out` is left at its default, HEADINGS.md.
+
+# Twelve documents answer questions about this repository. Six markdown files do not, and the
+# globs are what keep them out rather than a refusal list:
+#   .github/PULL_REQUEST_TEMPLATE.md and .github/ISSUE_TEMPLATE/bug_report.md are forge forms;
+#   the four under neuro-pil/tests/fixtures/synthetic-vault/ are a synthetic weather vault the
+#   test suite builds a graph out of — a station, an inland reading, a coastal reading and a
+#   weekend forecast — whose prose is fixture data and answers nothing anybody would ask here.
+# The uppercase initial is what does the work: fnmatch's `*` crosses `/`, so `[A-Z]*.md` matches
+# every root document and nothing under a lowercase directory, and the two package globs match a
+# document sitting directly in a package and not one under its `tests/`. The cost is stated in
+# AGENTS.md's Known gaps: a new document at a lowercase path — `akesi-pil/docs/`, say — is out of
+# scope until its glob is added here, and the verifier reports that as a stale projection rather
+# than as a silence.
+# Written with no space after either comma, deliberately: `gen_headings.py` splits this value on
+# `,` and does not strip the pieces, while `config.py` does, so a glob written as ", akesi-pil/..."
+# matches nothing in the generator and everything in the verifier's own idea of the corpus. That
+# asymmetry is being fixed in the hub; this line does not depend on the fix landing.
+scope = [A-Z]*.md,akesi-pil/[A-Z]*.md,neuro-pil/[A-Z]*.md
+
+# A hit may be answered with the line that matched. This repository is public, holds no credential
+# and no patient record: every clinical-looking value in it is an invented example — BENCHMARKS.md's
+# rows are measurements of this code, and akesi-pil/README.md's walk-through is one fabricated
+# patient written to show a unit conversion. What a line carries here is a number this repository
+# is accountable for, and the sentence that states it is the answer; a reader handed only the
+# enclosing heading would have to take the claim on trust, which is the thing BENCHMARKS.md's own
+# first section exists to refuse.
+quote = line

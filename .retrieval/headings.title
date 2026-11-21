@@ -1,0 +1,18 @@
+# {out}
+
+**Every `##` and `###` heading in this repository, grouped by document — the fallback for a
+question whose subject is unknown.** {headings} headings across {docs} documents, written whole by
+`plover-context`'s `infra/retrieval/gen_headings.py` and edited by hand nowhere. It is a projection
+and not a source: a figure read here carries the date the projection was generated, which
+`git log -1 --format='%h %ad' {out}` answers off the tree rather than out of the text.
+
+[`AGENTS.md`](AGENTS.md) beside it is the entry point, and its three ranked commands come first —
+they answer a word that appears in no heading at all, which this cannot.
+
+**The headings sort into three kinds, and knowing which one a hit is saves opening the wrong
+document.** A heading in a package's `README.md` is a numbered step of a worked example, so the
+answer under it is a demonstration. A heading in a package's `ARCHITECTURE.md` is a contract, so
+the answer under it is a rule the code is held to — including the two `Explicitly out of scope`
+sections, which are where a question about something this repository deliberately does not do is
+answered. A heading in `BENCHMARKS.md` names a measurement and carries a number, and the number is
+the point: the section above it says what a row has to do to be on the page at all.
